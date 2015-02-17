@@ -1,5 +1,19 @@
-var c = document.getElementById("first");
-	$('#c').mouseup(function(){
-		c.currentTime = 0;
-		c.play();
-	});
+var song;
+$('div').mousedown(function(){
+	var id = $(event.target).attr('id');
+	switch(id){
+		case 'c':
+			elm = 'first';
+			break;
+		case 
+		default:
+			elm = 0;
+			break;
+	}
+		song = document.getElementById(elm);
+		song.currentTime = 0;
+		song.play();
+});
+$(document).mouseup(function(){
+	song.pause();
+})
