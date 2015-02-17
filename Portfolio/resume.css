@@ -1,0 +1,46 @@
+/* {
+                border: 2px solid black;
+            }*/
+            body {
+                margin: 30px 100px 30px 100px;
+                font-size: 14px;
+            }
+            th {
+                text-align: left;
+            }
+            #body {
+                margin: auto;
+                width: 900px;
+            }
+            .section {
+                /*border: solid;*/
+                overflow: hidden;
+                display:block;
+            }
+            #header {
+                text-align:center;
+                width: 350px;
+                margin: auto;
+            }
+            .bold {
+                font-weight: bold;
+            }
+            .education {
+                float:left;
+            }
+            .relevent {
+                display: inline-block;
+                width:250px;
+            }
+            #place {
+                width:400px;
+            }
+            #pos {
+                width:300px;
+            }
+            #date {
+                width:200px;
+            }
+            #place2 {
+                width:700px;
+            }

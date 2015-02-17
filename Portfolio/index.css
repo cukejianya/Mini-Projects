@@ -1,0 +1,41 @@
+body {
+    background: url('http://p1.pichost.me/i/25/1481284.jpg') no-repeat center center fixed;
+    /*Resize image to fit webpage*/
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    
+    /*-----Back up background pic-----*/
+    /*url('http://fc06.deviantart.net/fs71/f/2012/236/d/0/animated_background_1_by_greyannis-d5c8ffa.gif')*/
+}
+#header {
+    margin: 0 auto 0 auto;
+    text-align: center;
+}
+div h1 {
+    color:#ffffff;
+    font-size:60px;
+
+}
+img {
+    height:150px;
+    width:200px;
+    border: solid 5px #926239;
+    box-shadow:2px 5px 5px 0 #444;
+}
+a {
+    text-decoration:none;
+}
+div input {
+    display:block;
+    color:#845;
+    font-size:20px;
+    background: #59f;
+    height:50px;
+    width:100px;
+    margin: 0 auto 5px auto;
+    border: solid 3px #15b;
+    border-radius:10%;
+    box-shadow:2px 2px 2px 0px #666;
+}
