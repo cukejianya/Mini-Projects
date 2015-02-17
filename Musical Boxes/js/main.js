@@ -5,7 +5,7 @@ $('div').mousedown(function(){
 		case 'c':
 			elm = 'first';
 			break;
-		case 
+
 		default:
 			elm = 0;
 			break;
