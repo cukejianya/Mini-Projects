@@ -1,4 +1,4 @@
-html, div {
+body, div {
 	background: black;
 }
 
@@ -10,7 +10,16 @@ html, div {
     float:left;
 }
 .center {
-	margin-top: 100px;
+    margin-left: 15%;
+}
+#wave {
+    margin-left: 15%;
+    height: 128px;
+    width: 812px;
+    
+}
+#waveform {
+    position: relative;
 }
 
 #instrument {
@@ -24,7 +33,7 @@ html, div {
 }
 
 
-#c {
+#c{
     background-color: #3e181b;
     border: 3px solid #db1d2d;
 }
@@ -33,6 +42,7 @@ html, div {
     cursor: pointer;
 }
 #c:active {
+    color:#661920;
 	background-color: #db1d2d;
 }
 
@@ -46,6 +56,7 @@ html, div {
 	cursor: pointer;
 }
 #d:active {
+    color: #6e2819;
 	background-color: #f0421c;
 }
 
