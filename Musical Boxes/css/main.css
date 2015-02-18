@@ -8,6 +8,7 @@ body, div {
     margin-left: 10px;
     margin-top: 10px;
     float:left;
+    -webkit-user-select: none;
 }
 .center {
     margin-left: 15%;

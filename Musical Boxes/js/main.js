@@ -3,7 +3,7 @@
 var wavesurfer;
 var x =0;
 
-$('div').mousedown(function(e){
+$('div').on('vmousedown',function(e){
 	//Prevents event to run more than once per click
 	e.stopPropagation();
 
@@ -37,10 +37,10 @@ $('div').mousedown(function(e){
 	var song;
 		switch(id){
 			case '#c':
-				song = 'KHTheme.ogg';
+				song = 'KirkFranklinAlways.mp3';
 				break;
 			case '#d':
-				song = 'TidusTheme.ogg';
+				song = '4b8p-10sec.mp3';
 				break;
 			case '#e':
 				song = 'Final_Fantasy.ogg';
@@ -72,7 +72,7 @@ $('div').mousedown(function(e){
 });
 
 // kills music wavesurfer and the div containing the wavesurfer object
-$(document).mouseup(function(){
+$(document).on('vmouseup',function(){
 	$('#wave').empty();
 	wavesurfer.pause();
 	wavesurfer = 0;
