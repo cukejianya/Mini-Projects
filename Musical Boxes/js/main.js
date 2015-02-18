@@ -63,7 +63,7 @@ $('div').mousedown(function(e){
 		}
 
 	// load the music file
-	wavesurfer.load('../music/'+song);
+	wavesurfer.load('music/'+song);
 
 	// play music file when loaded
 	wavesurfer.on('ready', function () {
