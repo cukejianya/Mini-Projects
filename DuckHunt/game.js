@@ -16,6 +16,7 @@ var canvas, ctx, dhImage, dogSx, dogX, sniffNum, sniff, bg, move, fps, dogMove, 
 initDraw();
 
 
+// The beginning animation
 function begin() {
   if (move) {
     dogMove();
@@ -26,8 +27,8 @@ function begin() {
   }
 }
 
+// The actual game
 function game(){
-
 }
 
 
@@ -38,6 +39,8 @@ function initDraw() {
   ctx.beginPath();
   ctx.fillStyle = "#87CEEB";
   ctx.fillStyle = "#C96A1B";
+  canvas.addEventListener('click', shoot);
+
   dhImage = new Image();
   dhImage.src = 'assets/duckhunt.png';
 
@@ -55,6 +58,8 @@ function initDraw() {
   };
 }
 
+
+
 function animateMove() {
     setTimeout(function(){
         requestAnimFrame( animateMove );
@@ -68,8 +73,6 @@ function play() {
       game();
   }, 1000/fps)
 }
-
-
 
 
 function dogMove() {
@@ -174,6 +177,11 @@ function dogJump(){
 
 function flyingbird() {
 
+}
+
+function shoot() {
+  var audio = new Audio('assets/sound/shoot.wav');
+  audio.play();
 }
 
 
