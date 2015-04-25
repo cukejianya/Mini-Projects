@@ -45,7 +45,7 @@ function initDraw() {
   dhImage.src = 'assets/duckhunt.png';
 
   fps = 15;
-  dogSx = 5;
+  dogSx = 0;
   dogX = 20;
   sniffNum = 0;
   bg = function(){
@@ -77,8 +77,8 @@ function play() {
 
 function dogMove() {
    ctx.clearRect(dogX, 460, 130, 105);
-   if (dogSx >= 245) {
-       dogSx = 5;
+   if (dogSx >= 240) {
+       dogSx = 0;
    }
    else {
        dogSx += 60;
@@ -87,12 +87,12 @@ function dogMove() {
    //Redraw Background
    bg();
    //Dog Image
-   ctx.drawImage(dhImage,dogSx,1,59,43,dogX,440,130,105);
+   ctx.drawImage(dhImage,dogSx,0,60,60,dogX,440,130,105);
 
    if ((dogX)%60===0) {
        // ctx.drawImage(dhImage,0,272,75,125,50,225,500,600);
        move = false;
-       dogSx = 185;
+       dogSx = 180;
        sniffNum = 0;
        // move = false;
    } else if (dogX > 300) {
@@ -103,17 +103,17 @@ function dogMove() {
 }
 
 function dogSniff() {
-    if (dogSx === 185) {
-        dogSx = 245;
+    if (dogSx === 180) {
+        dogSx = 240;
         sniffNum++;
         bg();
-        ctx.drawImage(dhImage,dogSx,1,59,43,dogX,440,130,105);
+        ctx.drawImage(dhImage,dogSx,0,60,60,dogX,440,130,105);
     } else if (sniffNum === 3) {
         move = true;
-    } else if (dogSx === 245) {
-        dogSx = 185;
+    } else if (dogSx === 240) {
+        dogSx = 180;
         bg();
-        ctx.drawImage(dhImage,dogSx,1,59,43,dogX,440,130,105);
+        ctx.drawImage(dhImage,dogSx,0,60,60,dogX,440,130,105);
     }
 }
 
@@ -122,48 +122,42 @@ function dogJump(){
 
   switch(frame) {
     case 0:
-      dogSx = 5;
+      dogSx = 0;
       dogY = 440;
-      ctx.drawImage(dhImage,dogSx,59,55,50,dogX,dogY,130,105);
-      dogSx=65
+      ctx.drawImage(dhImage,dogSx,61,60,60,dogX,dogY,130,105);
+      dogSx=60
       break;
     case 1:
       dogY-=20;
       dogX+=5;
-      ctx.drawImage(dhImage,dogSx,59,55,50,dogX,dogY,130,105);
+      ctx.drawImage(dhImage,dogSx,61,60,50,dogX,dogY,130,105);
       break;
     case 2:
       dogY-=20;
       dogX+=5;
-      ctx.drawImage(dhImage,dogSx,59,55,50,dogX,dogY,130,105);
+      ctx.drawImage(dhImage,dogSx,61,60,50,dogX,dogY,130,105);
       break;
     case 3:
       dogY-=20;
       dogX+=5;
-      ctx.drawImage(dhImage,dogSx,59,55,50,dogX,dogY,130,105);
+      ctx.drawImage(dhImage,dogSx,61,60,50,dogX,dogY,130,105);
       break;
     case 4:
       dogY-=20;
       dogX+=5;
-      ctx.drawImage(dhImage,dogSx,59,55,50,dogX,dogY,130,105);
+      ctx.drawImage(dhImage,dogSx,61,60,50,dogX,dogY,130,105);
       break;
     case 5:
       dogSx = 130;
-      ctx.drawImage(dhImage,dogSx,59,55,50,dogX,dogY,130,105);
+      ctx.drawImage(dhImage,dogSx,61,60,50,dogX,dogY,130,105);
       ctx.drawImage(dhImage,0,720,800,180,0,380,800,180);
       break;
     case 6:
       dogY+=20;
       dogX+=5;
-      ctx.drawImage(dhImage,dogSx,59,55,50,dogX,dogY,124,100);
+      ctx.drawImage(dhImage,dogSx,61,55,50,dogX,dogY,124,100);
       ctx.drawImage(dhImage,0,720,800,180,0,380,800,180);
       break;
-    // case 7:
-    //   dogY+=20;
-    //   dogX+=5;
-    //   ctx.drawImage(dhImage,dogSx,59,55,50,dogX,dogY,120,97);
-    //   ctx.drawImage(dhImage,0,720,800,180,0,380,800,180);
-    //   break;
     default:
       window.cancelAnimationFrame(requestAnimFrame( animateMove ));
       break;
@@ -176,10 +170,18 @@ function dogJump(){
 }
 
 function flyingbird() {
-
+    var birdtype = Math.floor(3*Math.random());
+    if (birdtype ===0) {
+        var birdSx = 0;
+    } else if (birdtype === 1) {
+        var birdSx = 130;
+    } else {
+        var birdSx = 260;
+    }
 }
 
-function shoot() {
+function shoot(e) {
+  e.preventDefault();
   var audio = new Audio('assets/sound/shoot.wav');
   audio.play();
 }
