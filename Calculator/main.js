@@ -23,7 +23,7 @@ $('.button').on('click', function(e) {
 				decimal = false;
 
 
-		if(input.value === "0" && button.innerHTML !== '.')
+		if(input.value === "0" && button.innerHTML !== '.' && operBool)
 				input.value = button.innerHTML;
 		else
 				input.value += button.innerHTML;
@@ -37,7 +37,7 @@ $('.button').on('click', function(e) {
 			} else {
 				 operationArr[operationArr.length] = input.value;
 				 operationArr[operationArr.length] = id;
-				 clearCal("decimal", "input");
+				 clearCal("input", "decimal");
 			}
 
 			operBool = !operBool;
@@ -56,6 +56,8 @@ $('.button').on('click', function(e) {
 
 
 function clearCal(type1, type2, type3) {
+
+	console.log(type1 + " " + type2);
 
 	if (!type1) {
 		input.value = "0";
