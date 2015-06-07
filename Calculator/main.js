@@ -2,8 +2,8 @@ var operationArr = [];
 var input = document.getElementById("screen");
 var decimal = true;
 input.value = 0;
-var operBool = false;
-
+var newInput = true;
+var pow = Math.pow;
 
 $('.button').on('click', function(e) {
 
@@ -12,52 +12,52 @@ $('.button').on('click', function(e) {
 	setFocus();
 
 		var id = $(event.target).attr('id');
+		var cls = $(event.target).attr('class');
+		//console.log("Class: "+ cls);
 		var button = document.getElementById(id);
-
-	console.log(button.innerHTML);
-
-
-	if(/[0-9]/.test(button.innerHTML) || (button.innerHTML === '.' && decimal)) {
-
-		if(button.innerHTML === '.')
-				decimal = false;
+		//console.log(typeof id + ": " + id);
 
 
-		if(input.value === "0" && button.innerHTML !== '.' && operBool)
+	if(/[0-9]/.test(button.innerHTML)) {
+
+		if(newInput && button.innerHTML !== '.') {
 				input.value = button.innerHTML;
-		else
+				newInput = false;
+		}else{
 				input.value += button.innerHTML;
+		}
 
-	} else if(/[asdm]/.test(id)) {
+	} else if(cls.split(" ")[1] === "operator") {
 
-			if(operBool) {
-					ans();
-					operationArr[operationArr.length] = input.value;
-					operationArr[operationArr.length] = id;
+			if(operationArr.length > 1) {
+					operationArr.unshift(ans());
+					operationArr.push(id);
 			} else {
-				 operationArr[operationArr.length] = input.value;
-				 operationArr[operationArr.length] = id;
+				 operationArr.push(input.value);
+				 operationArr.push(id);
 				 clearCal("input", "decimal");
 			}
-
-			operBool = !operBool;
-
 
 	} else if(button.innerHTML === "=") {
 			ans();
 	} else if (id === "CE") {
 			clearCal();
+	} else if (button.innerHTML === '.' && decimal) {
+
+		if (newInput) {
+				input.value = "0.";
+				newInput = false;
+		} else {
+				input.value += button.innerHTML;
+		}
+		decimal = false;
 	}
-
+	//console.log("Array: "+ operationArr);
 });
-
-
-
-
 
 function clearCal(type1, type2, type3) {
 
-	console.log(type1 + " " + type2);
+	//console.log(type1 + " " + type2 + " " + type3);
 
 	if (!type1) {
 		input.value = "0";
@@ -66,7 +66,7 @@ function clearCal(type1, type2, type3) {
 	}
 
 	if ((type1 || type2 || type3) === "input") {
-			input.value = "0";
+			newInput = true;
 	}
 
 	if((type1 || type2 || type3) === "arr") {
@@ -79,7 +79,6 @@ function clearCal(type1, type2, type3) {
 
 }
 
-
 function setFocus() {
 	input.focus();
 }
@@ -87,27 +86,16 @@ function setFocus() {
 function ans() {
 		operationArr[operationArr.length] = input.value;
 
-		var a = parseFloat(operationArr[0]);
-		var b = parseFloat(operationArr[2]);
+		var a = parseFloat(operationArr.shift());
+		var operation = operationArr.shift();
+		console.log(operation);
+		var b = parseFloat(operationArr.shift());
+		var retans = window[operation](a, b);
+		input.value = retans;
+		//call 1 of 4 operations
 
-	switch(operationArr[1]) {
-		case "d":
-				input.value = divide(a, b);
-				break;
-		case "s":
-				input.value = subract(a, b);
-				break;
-		case "m":
-				input.value = multiple(a, b);
-				break;
-		case "a":
-				input.value = addition(a, b);
-				break;
-		default:
-				break;
-	}
-
-	clearCal("arr", "decimal");
+	clearCal("input","decimal");
+	return retans;
 }
 
 function addition(a,b) {
@@ -121,4 +109,7 @@ function multiple(a, b) {
 }
 function divide (a, b) {
 	return a/b;
+}
+function mod(a, b) {
+	return a % b;
 }

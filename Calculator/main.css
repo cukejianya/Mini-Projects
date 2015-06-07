@@ -9,7 +9,10 @@ body {
 	color: #fff;
 }
 
-
+sup {
+	font-size: 10px
+	
+}
 #calculator {
 	border-radius: 10px;
 	width: 360px;
