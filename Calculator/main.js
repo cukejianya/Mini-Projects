@@ -12,6 +12,8 @@ $('.button').on('click', function(e) {
 	setFocus();
 
 		var id = $(event.target).attr('id');
+		var cls = $(event.target).attr('class');
+		console.log("Class: "+ cls);
 		var button = document.getElementById(id);
 		console.log(typeof id + ": " + id);
 
@@ -23,27 +25,21 @@ $('.button').on('click', function(e) {
 		if(button.innerHTML === '.')
 				decimal = false;
 
-
-		if(input.value === "0" && button.innerHTML !== '.' && operBool)
+		if(input.value === "0" && button.innerHTML !== '.')
 				input.value = button.innerHTML;
 		else
 				input.value += button.innerHTML;
 
-	} else if(/[asdm]/.test(id)) {
+	} else if(cls.split(" ")[1] === "operator") {
 
-			if(operBool) {
-					ans();
-					operationArr[operationArr.length] = input.value;
-					operationArr[operationArr.length] = id;
+			if(operationArr.length > 2) {
+					operationArr.unshift(ans());
+					operationArr.push(id);	
 			} else {
-				 operationArr[operationArr.length] = input.value;
-				 operationArr[operationArr.length] = id;
+				 operationArr.push(input.value);
+				 operationArr.push(id);
 				 clearCal("input", "decimal");
 			}
-
-			operBool = !operBool;
-
-
 	} else if(button.innerHTML === "=") {
 			ans();
 	} else if (id === "CE") {
@@ -93,10 +89,11 @@ function ans() {
 		console.log(operation);
 		var b = parseFloat(operationArr.shift());
 		var retans = window[operation](a, b);
-		input.value = retans
-		operationArr.unshift(retans); //call 1 of 4 operations
+		input.value = retans;
+		//call 1 of 4 operations
 
 	clearCal("decimal");
+	return retans;
 }
 
 function operater(a,f,b) {
