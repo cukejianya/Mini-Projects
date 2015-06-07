@@ -3,7 +3,7 @@ var input = document.getElementById("screen");
 var decimal = true;
 input.value = 0;
 var newInput = true;
-
+var pow = Math.pow;
 
 $('.button').on('click', function(e) {
 
@@ -15,7 +15,7 @@ $('.button').on('click', function(e) {
 		var cls = $(event.target).attr('class');
 		//console.log("Class: "+ cls);
 		var button = document.getElementById(id);
-		console.log(typeof id + ": " + id);
+		//console.log(typeof id + ": " + id);
 
 
 	if(/[0-9]/.test(button.innerHTML)) {
@@ -52,17 +52,12 @@ $('.button').on('click', function(e) {
 		}
 		decimal = false;
 	}
-
-	console.log("Array: "+ operationArr);
+	//console.log("Array: "+ operationArr);
 });
-
-
-
-
 
 function clearCal(type1, type2, type3) {
 
-	console.log(type1 + " " + type2 + " " + type3);
+	//console.log(type1 + " " + type2 + " " + type3);
 
 	if (!type1) {
 		input.value = "0";
@@ -84,7 +79,6 @@ function clearCal(type1, type2, type3) {
 
 }
 
-
 function setFocus() {
 	input.focus();
 }
@@ -104,9 +98,6 @@ function ans() {
 	return retans;
 }
 
-function operater(a,f,b) {
-	return f(a,b);
-}
 function addition(a,b) {
 	return (a + b);
 }
@@ -118,4 +109,7 @@ function multiple(a, b) {
 }
 function divide (a, b) {
 	return a/b;
+}
+function mod(a, b) {
+	return a % b;
 }
