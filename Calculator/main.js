@@ -2,7 +2,7 @@ var operationArr = [];
 var input = document.getElementById("screen");
 var decimal = true;
 input.value = 0;
-var operBool = false;
+var newInput = true;
 
 
 $('.button').on('click', function(e) {
@@ -13,39 +13,47 @@ $('.button').on('click', function(e) {
 
 		var id = $(event.target).attr('id');
 		var cls = $(event.target).attr('class');
-		console.log("Class: "+ cls);
+		//console.log("Class: "+ cls);
 		var button = document.getElementById(id);
 		console.log(typeof id + ": " + id);
 
-	console.log(button.innerHTML);
 
+	if(/[0-9]/.test(button.innerHTML)) {
 
-	if(/[0-9]/.test(button.innerHTML) || (button.innerHTML === '.' && decimal)) {
-
-		if(button.innerHTML === '.')
-				decimal = false;
-
-		if(input.value === "0" && button.innerHTML !== '.')
+		if(newInput && button.innerHTML !== '.') {
 				input.value = button.innerHTML;
-		else
+				newInput = false;
+		}else{
 				input.value += button.innerHTML;
+		}
 
 	} else if(cls.split(" ")[1] === "operator") {
 
-			if(operationArr.length > 2) {
+			if(operationArr.length > 1) {
 					operationArr.unshift(ans());
-					operationArr.push(id);	
+					operationArr.push(id);
 			} else {
 				 operationArr.push(input.value);
 				 operationArr.push(id);
 				 clearCal("input", "decimal");
 			}
+
 	} else if(button.innerHTML === "=") {
 			ans();
 	} else if (id === "CE") {
 			clearCal();
+	} else if (button.innerHTML === '.' && decimal) {
+
+		if (newInput) {
+				input.value = "0.";
+				newInput = false;
+		} else {
+				input.value += button.innerHTML;
+		}
+		decimal = false;
 	}
 
+	console.log("Array: "+ operationArr);
 });
 
 
@@ -54,7 +62,7 @@ $('.button').on('click', function(e) {
 
 function clearCal(type1, type2, type3) {
 
-	console.log(type1 + " " + type2);
+	console.log(type1 + " " + type2 + " " + type3);
 
 	if (!type1) {
 		input.value = "0";
@@ -63,7 +71,7 @@ function clearCal(type1, type2, type3) {
 	}
 
 	if ((type1 || type2 || type3) === "input") {
-			input.value = "0";
+			newInput = true;
 	}
 
 	if((type1 || type2 || type3) === "arr") {
@@ -92,7 +100,7 @@ function ans() {
 		input.value = retans;
 		//call 1 of 4 operations
 
-	clearCal("decimal");
+	clearCal("input","decimal");
 	return retans;
 }
 
