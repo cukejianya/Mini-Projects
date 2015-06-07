@@ -13,6 +13,7 @@ $('.button').on('click', function(e) {
 
 		var id = $(event.target).attr('id');
 		var button = document.getElementById(id);
+		console.log(typeof id + ": " + id);
 
 	console.log(button.innerHTML);
 
@@ -87,29 +88,20 @@ function setFocus() {
 function ans() {
 		operationArr[operationArr.length] = input.value;
 
-		var a = parseFloat(operationArr[0]);
-		var b = parseFloat(operationArr[2]);
+		var a = parseFloat(operationArr.shift());
+		var operation = operationArr.shift();
+		console.log(operation);
+		var b = parseFloat(operationArr.shift());
+		var retans = window[operation](a, b);
+		input.value = retans
+		operationArr.unshift(retans); //call 1 of 4 operations
 
-	switch(operationArr[1]) {
-		case "d":
-				input.value = divide(a, b);
-				break;
-		case "s":
-				input.value = subract(a, b);
-				break;
-		case "m":
-				input.value = multiple(a, b);
-				break;
-		case "a":
-				input.value = addition(a, b);
-				break;
-		default:
-				break;
-	}
-
-	clearCal("arr", "decimal");
+	clearCal("decimal");
 }
 
+function operater(a,f,b) {
+	return f(a,b);
+}
 function addition(a,b) {
 	return (a + b);
 }
