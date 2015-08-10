@@ -1,5 +1,6 @@
 #game_div{
     text-align: center;
+    cursor: url(assets/crosshair.png);
 }
 
 canvas {
@@ -7,6 +8,7 @@ canvas {
 }
 
 body {
+  background: #000000;
 }
 
 audio {
