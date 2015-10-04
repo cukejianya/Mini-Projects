@@ -1,4 +1,3 @@
-
 var submit = document.getElementById('submit');
 
 var sudokuGrid = [];
@@ -19,7 +18,7 @@ function getInput() {
 
   for (var i = 0; i < arrayInput.length; i++) {
     var cell = arrayInput[i];
-    var coord = cell.name.split(',').map( function(a){return parseInt(a)} );
+    var coord = cell.name.split(',').map( function(a){return parseInt(a);} );
 
     var cellInfoMap = {
       'val': parseInt(cell.value),
@@ -73,7 +72,7 @@ function solve(array) {
       var groupNum = sudokuGrid[idx].group;
       console.log(
         '\nRound: '+m+
-        '\n i:'+i+
+        '\n i: '+i+
         '\n idx: '+idx+
         '\n coord: '+coord+
         '\n possibles: '+possibles+
