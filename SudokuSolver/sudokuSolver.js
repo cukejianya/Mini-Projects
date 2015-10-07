@@ -26,7 +26,7 @@ function getInput() {
       'group': groupPlacemant(coord),
     };
     if (!cell.value) {
-      cellInfoMap['possibles'] = numberArray;
+      cellInfoMap['possibles'] = numberArray.slice(0);
       emptyCellsGrid.push(i);
     }
     sudokuGrid[i] = cellInfoMap;
@@ -50,6 +50,7 @@ function getInput() {
       col[colNumber][valIdx-1] = true;
     }
   }
+  solve(emptyCellsGrid);
 }
 
 function groupPlacemant(array) {
@@ -64,20 +65,21 @@ function groupPlacemant(array) {
 }
 
 function solve(array) {
-  for (var m = 0; m < 2; m++) {
+  m = 0;
+  while ( emptyCellsGrid.length > 0 || m < 10 ) {
     for (var i = 0; i < array.length; i++) {
       var idx = array[i];
       var possibles = sudokuGrid[idx].possibles;
       var coord = sudokuGrid[idx].coord;
       var groupNum = sudokuGrid[idx].group;
-      console.log(
-        '\nRound: '+m+
-        '\n i: '+i+
-        '\n idx: '+idx+
-        '\n coord: '+coord+
-        '\n possibles: '+possibles+
-        '\n groupNum: '+groupNum
-      );
+    //   console.log(
+    //     '\nRound: '+m+
+    //     '\n i: '+i+
+    //     '\n idx: '+idx+
+    //     '\n coord: '+coord+
+    //     '\n possibles: '+possibles+
+    //     '\n groupNum: '+groupNum
+    //   );
       for (var j = 0; j < possibles.length; j++ ) {
         var possible = possibles[j];
         if (group[groupNum][possible-1] || row[coord[0]][possible-1] || col[coord[1]][possible-1]) {
@@ -97,8 +99,8 @@ function solve(array) {
         sudokuGrid[idx].possibles = possibles;
       }
     }
+    m++;
   }
 }
-
 
 submit.addEventListener('click', getInput);
