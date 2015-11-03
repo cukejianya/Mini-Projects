@@ -1,24 +1,9 @@
 var map;
 var geolocate = {};
 var place;
-var req = new XMLHttpRequest();
-
-req.onload = function (e) {
-  if (xhr.readyState === 4) {
-    if (xhr.status === 200) {
-      console.log(xhr.responseText);
-    } else {
-      console.error(xhr.statusText);
-    }
-  }
-};
-
-req.onerror = function (e) {
-  console.error(xhr.statusText);
-};
 
 function initMap() {
-  map = new google.maps.Map(document.getElementById('map'), {
+  map = new google.maps.Map(document.getElementById('map-canvas'), {
     center: {lat: 41.850033, lng: -87.6500523},
     zoom: 4
   });
@@ -45,6 +30,7 @@ function initMap() {
     }
     geolocate.lan = place.geometry.location.lat();
     geolocate.lng = place.geometry.location.lng();
+
     if (place.geometry.viewport) {
       map.fitBounds(place.geometry.viewport);
     } else {
