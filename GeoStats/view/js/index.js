@@ -50,4 +50,16 @@ function initMap() {
         place.formatted_address);
     infowindow.open(map, marker);
   });
+
+  $.ajax({
+    url: "/",
+    beforeSend: function( xhr ) {
+      xhr.overrideMimeType( "text/plain; charset=x-user-defined" );
+    }
+  })
+    .done(function( data ) {
+      if ( console && console.log ) {
+        console.log( "Sample of data:", geolocate.toString());
+      }
+  });
 }
