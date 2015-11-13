@@ -15,9 +15,11 @@ function initMap() {
 
   autocomplete = new google.maps.places.Autocomplete(input, options);
   var infowindow = new google.maps.InfoWindow();
+
   var marker = new google.maps.Marker({
     map: map
   });
+
   marker.addListener('click', function() {
     infowindow.open(map, marker);
   });
@@ -49,17 +51,5 @@ function initMap() {
         'Place ID: ' + place.place_id + '<br>' +
         place.formatted_address);
     infowindow.open(map, marker);
-  });
-
-  $.ajax({
-    url: "/",
-    beforeSend: function( xhr ) {
-      xhr.overrideMimeType( "text/plain; charset=x-user-defined" );
-    }
-  })
-    .done(function( data ) {
-      if ( console && console.log ) {
-        console.log( "Sample of data:", geolocate.toString());
-      }
   });
 }
