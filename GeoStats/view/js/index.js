@@ -30,8 +30,22 @@ function initMap() {
     if (!place.geometry) {
       return;
     }
-    geolocate.lan = place.geometry.location.lat();
-    geolocate.lng = place.geometry.location.lng();
+    var geolocate = {
+      lat: place.geometry.location.lat(),
+      lng: place.geometry.location.lng(),
+    }
+
+    $.ajax({
+        type: "POST",
+        url: '/coords/',
+        data: geolocate,
+        success: function(data) {
+
+        },
+        error: function(jqXHR, textstatus, errorThrown) {
+            alert('text status ' + textstatus + ', err ' + errorThrown);
+        }
+    });
 
     if (place.geometry.viewport) {
       map.fitBounds(place.geometry.viewport);
