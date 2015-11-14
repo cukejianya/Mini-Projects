@@ -29,7 +29,7 @@
             <li><a href="#">Link</a></li>
             <li>&nbsp;</li>
           </ul>
-          <form class="navbar-form" id="searchTextField">
+          <form class="navbar-form" onSubmit="return false;">
             <div class="form-group" style="display:inline;">
               <div class="input-group">
                 <!-- <div class="input-group-btn">
@@ -42,7 +42,7 @@
                     <li><a href="#">Category 5</a></li>
                   </ul>
                 </div> -->
-                <input type="text" class="form-control" placeholder="What are you searching for?">
+                <input id="searchTextField" type="text" class="form-control" placeholder="What are you searching for?">
                 <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span> </span>
               </div>
             </div>
@@ -55,7 +55,7 @@
       <div class="row">
       	<div class="col-xs-4" id="left">
 
-          <h2>Bootstrap Google Maps Demo</h2>
+          <h2 id='place-name'>Bootstrap Google Maps Demo</h2>
 
           <!-- item list -->
           <div class="panel panel-default">
