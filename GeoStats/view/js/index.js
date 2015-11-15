@@ -30,6 +30,7 @@ function initMap() {
     if (!place.geometry) {
       return;
     }
+    console.log(place.address_components);
     var geolocate = {
       lat: place.geometry.location.lat(),
       lng: place.geometry.location.lng(),
@@ -39,7 +40,7 @@ function initMap() {
         type: "POST",
         url: '/coords/',
         data: geolocate,
-        success: function(data) {
+        success: function() {
 
         },
         error: function(jqXHR, textstatus, errorThrown) {

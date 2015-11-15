@@ -2,6 +2,7 @@ var express = require('express')
 var app = express();
 var bodyparser = require('body-parser');
 var path = require('path');
+var request = require('./server/request.js');
 
 app.use(express.static(path.join(__dirname, 'view')));
 app.use(bodyparser.urlencoded({extended: false}));
@@ -12,7 +13,7 @@ app.get('/', function(req, res){
 });
 
 app.post('/coords/', function(req, res) {
-  console.dir(req.body);
+  request.convertCoords(req.body.lat, req.body.lng);
   res.send('reverse');
 })
 
