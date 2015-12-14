@@ -1,7 +1,7 @@
 var request = require('request');
 var path = require('path');
 var urlApi = require('url');
-var variables = require('./data/censusVariables.json').census;
+var variables = require('./data/censusVariables.json');
 
 function formatURL(protocol, host, path, queryObj){
   var url = urlApi.format({
@@ -28,54 +28,64 @@ function convertCoords(latitude, longitude) {
   })
 }
 
-function reformatData(dict) {
+function getCode(dict) {
   var keys = Object.keys(dict);
-  keys.reduce(function(arr, variable) {
+  return keys.reduce(function(arr, variable) {
     arr.push(dict[variable]);
     return arr;
   }, []);
-  console.log(dict)
-  return keys;
+}
+
+function reformatData(dict, data) {
+  var keys = Object.keys(dict);
+  keys.forEach(function(key) {
+    dict[key].forEach(function(code, idx) {
+      var data_idx = data[0].indexOf(code);
+      dict[key][idx] = parseInt(data[1][data_idx]);
+
+      if(dict[key].length === (idx + 1)){
+        dict[key] = dict[key].reduce(function(prev, current) {
+          console.log(current)
+          return prev + current;
+        }, 0);
+      }
+    });
+  });
+  console.log(variables)
+}
+
+function getCensusData(type, query){
+  var typeDict = variables[type];
+  var typeCode = getCode(typeDict);
+  console.log(typeCode);
+  query.get = typeCode.sort().join();
+  var url = formatURL('http','api.census.gov','/data/2010/sf1', query);
+
+  request(url, function(error, response, body) {
+    if (!error && response.statusCode == 200)
+      reformatData(typeDict, JSON.parse(body));
+  });
+
 }
 
 function getGeoInfo(fips) {
   fips = fips.split('');
   var stateFIPS = fips.splice(0,2).join('');
   var countyFIPS = fips.splice(0,3).join('');
-  var tractFIPS = fips.splice(0,6).join('')
+  var tractFIPS = fips.splice(0,6).join('');
   var query = {
     key: '9690f87a492f7f74100be910a9dc9ce10b598f93',
     for:'tract:'+tractFIPS,
     in: 'state:'+stateFIPS+'+county:'+countyFIPS
   }
-  var queryRace = query.clone();
-  var queryMaleAge = query.clone();
-  var queryFemaleAge = query.clone();
 
-  var race = reformatData(variables[0].race);
-  var maleAge = reformatData(variables[1].maleAge);
-  var femaleAge = reformatData(variables[2].femaleAge);
+  var categories = Object.keys(variables);
+  categories.forEach(function(elm, idx) {
+    if (elm === "econ")
+      return;
 
-  queryRace.get = race.sort().join();
-  queryMaleAge.get = maleAge.sort().join();
-  queryFemaleAge.get = femaleAge.sort().join();
-
-  var urlRace = formatURL('http','api.census.gov','/data/2010/sf1', queryRace);
-  var urlMaleAge = formatURL('http','api.census.gov','/data/2010/sf1', queryMaleAge);
-  var urlFemaleAge = formatURL('http','api.census.gov','/data/2010/sf1', queryFemaleAge);
-  console.log(urlRace);
-  request(urlRace, function getRacePop(error, response, body){
-    if (!error && response.statusCode == 200)
-      console.log(body);
-  });
-  request(urlMaleAge, function getMalePop(error, response, body){
-    if (!error && response.statusCode == 200)
-      console.log(body);
-  });
-  request(urlFemaleAge, function getFemalePop(error, response, body){
-    if (!error && response.statusCode == 200)
-      console.log(body);
-  });
+    getCensusData(elm, query.clone());
+  })
 }
 
 module.exports = {
