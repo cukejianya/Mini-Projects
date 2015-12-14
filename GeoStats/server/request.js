@@ -1,7 +1,7 @@
 var request = require('request');
 var path = require('path');
 var urlApi = require('url');
-var variables = require('./data/censusVariables.json');
+var variables = require('./data/censusVariables.json').census;
 
 function formatURL(protocol, host, path, queryObj){
   var url = urlApi.format({
@@ -28,6 +28,16 @@ function convertCoords(latitude, longitude) {
   })
 }
 
+function reformatData(dict) {
+  var keys = Object.keys(dict);
+  keys.reduce(function(arr, variable) {
+    arr.push(dict[variable]);
+    return arr;
+  }, []);
+  console.log(dict)
+  return keys;
+}
+
 function getGeoInfo(fips) {
   fips = fips.split('');
   var stateFIPS = fips.splice(0,2).join('');
@@ -42,27 +52,13 @@ function getGeoInfo(fips) {
   var queryMaleAge = query.clone();
   var queryFemaleAge = query.clone();
 
-  var race = Object.keys(variables.race);
-  var raceVariables = race.reduce(function(arr, variable){
-    arr.push(variables.race[variable]);
-    return arr;
-  },[]);
+  var race = reformatData(variables[0].race);
+  var maleAge = reformatData(variables[1].maleAge);
+  var femaleAge = reformatData(variables[2].femaleAge);
 
-  var maleAge = Object.keys(variables.maleAge);
-  var maleAgeVariables = maleAge.reduce(function(arr, variable){
-    arr.push(variables.maleAge[variable]);
-    return arr;
-  },[]);
-
-  var femaleAge = Object.keys(variables.femaleAge);
-  var femaleAgeVariables = femaleAge.reduce(function(arr, variable){
-    arr.push(variables.femaleAge[variable]);
-    return arr;
-  },[]);
-
-  queryRace.get = raceVariables.sort().join();
-  queryMaleAge.get = maleAgeVariables.sort().join();
-  queryFemaleAge.get = femaleAgeVariables.sort().join();
+  queryRace.get = race.sort().join();
+  queryMaleAge.get = maleAge.sort().join();
+  queryFemaleAge.get = femaleAge.sort().join();
 
   var urlRace = formatURL('http','api.census.gov','/data/2010/sf1', queryRace);
   var urlMaleAge = formatURL('http','api.census.gov','/data/2010/sf1', queryMaleAge);
