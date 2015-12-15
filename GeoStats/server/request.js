@@ -2,7 +2,9 @@ var request = require('request');
 var path = require('path');
 var urlApi = require('url');
 var variables = require('./data/censusVariables.json');
+var readyCount = 3;
 
+//helper functions
 function formatURL(protocol, host, path, queryObj){
   var url = urlApi.format({
     protocol: protocol,
@@ -13,21 +15,6 @@ function formatURL(protocol, host, path, queryObj){
   return url;
 }
 
-function convertCoords(latitude, longitude) {
-  var query = {
-    format: 'json',
-    latitude: latitude,
-    longitude: longitude,
-    showall: false
-  }
-  var url = formatURL('http','data.fcc.gov', '/api/block/find', query);
-  request(url, function getFIPS(error, response, body){
-    if (!error && response.statusCode == 200)
-      getGeoInfo(JSON.parse(body).Block.FIPS);
-
-  })
-}
-
 function getCode(dict) {
   var keys = Object.keys(dict);
   return keys.reduce(function(arr, variable) {
@@ -36,39 +23,60 @@ function getCode(dict) {
   }, []);
 }
 
-function reformatData(dict, data) {
+function reformatData(dict, data, callback) {
   var keys = Object.keys(dict);
   keys.forEach(function(key) {
+    console.log(key);
     dict[key].forEach(function(code, idx) {
       var data_idx = data[0].indexOf(code);
       dict[key][idx] = parseInt(data[1][data_idx]);
 
       if(dict[key].length === (idx + 1)){
         dict[key] = dict[key].reduce(function(prev, current) {
-          console.log(current)
           return prev + current;
         }, 0);
       }
     });
   });
-  console.log(variables)
+  readyCount--;
+  if (readyCount < 1) {
+    callback(null, variables);
+  }
 }
 
-function getCensusData(type, query){
+//Main functions
+function convertCoords(latitude, longitude, callback) {
+  var query = {
+    format: 'json',
+    latitude: latitude,
+    longitude: longitude,
+    showall: false
+  }
+  var url = formatURL('http','data.fcc.gov', '/api/block/find', query);
+  var fip;
+
+  request(url, function getFIPS(error, response, body){
+    if(error){ callback(error) };
+    if (!error && response.statusCode == 200)
+      getGeoInfo(JSON.parse(body).Block.FIPS, callback);
+  })
+
+}
+
+function getCensusData(type, query, callback){
   var typeDict = variables[type];
   var typeCode = getCode(typeDict);
-  console.log(typeCode);
   query.get = typeCode.sort().join();
   var url = formatURL('http','api.census.gov','/data/2010/sf1', query);
 
   request(url, function(error, response, body) {
+    if(error){ callback(error) };
     if (!error && response.statusCode == 200)
-      reformatData(typeDict, JSON.parse(body));
+      reformatData(typeDict, JSON.parse(body), callback);
   });
-
 }
 
-function getGeoInfo(fips) {
+function getGeoInfo(fips, callback) {
   fips = fips.split('');
   var stateFIPS = fips.splice(0,2).join('');
   var countyFIPS = fips.splice(0,3).join('');
@@ -84,8 +92,9 @@ function getGeoInfo(fips) {
     if (elm === "econ")
       return;
 
-    getCensusData(elm, query.clone());
+    getCensusData(elm, query.clone(), callback);
   })
+
 }
 
 module.exports = {

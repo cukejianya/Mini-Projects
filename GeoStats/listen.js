@@ -13,8 +13,9 @@ app.get('/', function(req, res){
 });
 
 app.post('/coords/', function(req, res) {
-  request.convertCoords(req.body.lat, req.body.lng);
-  res.send('reverse');
+  request.convertCoords(req.body.lat, req.body.lng, function(err, result){
+    res.send(result);
+  });
 })
 
 app.listen(3000, function(){

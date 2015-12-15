@@ -40,8 +40,8 @@ function initMap() {
         type: "POST",
         url: '/coords/',
         data: geolocate,
-        success: function() {
-
+        success: function(data) {
+          plotData(data);
         },
         error: function(jqXHR, textstatus, errorThrown) {
             alert('text status ' + textstatus + ', err ' + errorThrown);
@@ -67,4 +67,18 @@ function initMap() {
         place.formatted_address);
     infowindow.open(map, marker);
   });
+}
+
+function plotData(data) {
+  var race = data.race;
+  var keys = Object.keys(race);
+  var values = keys.map(function(key){ return data[key] });
+
+  d3.select(".race").selectAll('div')
+      .data(keys)
+    .enter().append("div")
+      .style("width", function(key){
+        console.log(key, race[key]);
+        return race[key]/10 + 15 + "px"; })
+      .text(function(key){ return race[key] })
 }
