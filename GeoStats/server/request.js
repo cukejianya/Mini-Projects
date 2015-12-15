@@ -1,7 +1,8 @@
 var request = require('request');
 var path = require('path');
 var urlApi = require('url');
-var variables = require('./data/censusVariables.json');
+var variables;
+//Deep Copy Object
 var readyCount = 3;
 
 //helper functions
@@ -26,7 +27,7 @@ function getCode(dict) {
 function reformatData(dict, data, callback) {
   var keys = Object.keys(dict);
   keys.forEach(function(key) {
-    console.log(key);
+    // console.log(key);
     dict[key].forEach(function(code, idx) {
       var data_idx = data[0].indexOf(code);
       dict[key][idx] = parseInt(data[1][data_idx]);
@@ -53,14 +54,16 @@ function convertCoords(latitude, longitude, callback) {
     showall: false
   }
   var url = formatURL('http','data.fcc.gov', '/api/block/find', query);
-  var fip;
+  variables = JSON.parse( JSON.stringify(
+    require('./data/censusVariables.json')
+  ));;
 
   request(url, function getFIPS(error, response, body){
     if(error){ callback(error) };
     if (!error && response.statusCode == 200)
       getGeoInfo(JSON.parse(body).Block.FIPS, callback);
   })
-
+  console.log(variables);
 }
 
 function getCensusData(type, query, callback){

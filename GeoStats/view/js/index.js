@@ -69,16 +69,72 @@ function initMap() {
   });
 }
 
-function plotData(data) {
-  var race = data.race;
-  var keys = Object.keys(race);
-  var values = keys.map(function(key){ return data[key] });
+$(window).resize(respondCanvas);
 
-  d3.select(".race").selectAll('div')
-      .data(keys)
-    .enter().append("div")
-      .style("width", function(key){
-        console.log(key, race[key]);
-        return race[key]/10 + 15 + "px"; })
-      .text(function(key){ return race[key] })
+function respondCanvas() {
+  var canvas = document.querySelector(".race");
+  var context = canvas.getContext("2d");
+  var container = canvas.parentElement;
+  console.log("container", container);
+
+  canvas.width = container.offsetWidth - 50; //max width
+
+  //Call a function to redraw other content (texts, images etc)
+}
+respondCanvas();
+
+function plotData(censusData) {
+  var race = censusData.race;
+  var keys = Object.keys(race);
+  var data = keys.filter( function(key) {
+    return key !== "true";
+  }).map( function(key){
+    console.log(key);
+      return race[key]
+  });
+  console.log(race, keys, data);
+
+  var canvas = document.querySelector(".race");
+  var context = canvas.getContext("2d");
+
+  var width = canvas.width,
+      height = canvas.height,
+      outerRadius = height / 2 - 30,
+      innerRadius = outerRadius / 3;
+
+  var arc = d3_shape.arc()
+      .innerRadius(innerRadius)
+      .outerRadius(outerRadius)
+      .context(context);
+
+  var pie = d3_shape.pie();
+
+  var ease = d3_ease.cubicInOut,
+      duration = 2500;
+
+  d3_timer.timer(function(elapsed) {
+    var t = ease(1 - Math.abs((elapsed % duration) / duration - 0.5) * 2),
+        arcs = pie.padAngle(0.06 * t)(data);
+
+    context.save();
+    context.clearRect(0, 0, width, height);
+    context.translate(width / 2, height / 2);
+
+    context.beginPath();
+    arcs.forEach(arc.padAngle(0));
+    context.lineWidth = 1;
+    context.strokeStyle = "#777";
+    context.stroke();
+
+    context.beginPath();
+    arcs.forEach(arc.padAngle(0.06 * t));
+    context.fillStyle = "#ccc";
+    context.fill();
+    context.lineWidth = 1.5;
+    context.lineJoin = "round";
+    context.strokeStyle = "#000";
+    context.stroke();
+
+    context.restore();
+  });
 }
