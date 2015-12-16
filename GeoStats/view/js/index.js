@@ -41,7 +41,7 @@ function initMap() {
         url: '/coords/',
         data: geolocate,
         success: function(data) {
-          plotData(data);
+          plotData(JSON.parse(data));
         },
         error: function(jqXHR, textstatus, errorThrown) {
             alert('text status ' + textstatus + ', err ' + errorThrown);
@@ -73,7 +73,6 @@ $(window).resize(respondCanvas);
 
 function respondCanvas() {
   var canvas = document.querySelector(".race");
-  var context = canvas.getContext("2d");
   var container = canvas.parentElement;
   console.log("container", container);
 
@@ -82,10 +81,23 @@ function respondCanvas() {
   //Call a function to redraw other content (texts, images etc)
 }
 respondCanvas();
+function plotData(censusData){
+  plotRace(censusData);
+}
 
-function plotData(censusData) {
+function arcTween(outerRadius, delay) {
+  return function() {
+    d3.select(this).transition().delay(delay).attrTween("d", function(d) {
+      var i = d3.interpolate(d.outerRadius, outerRadius);
+      return function(t) { d.outerRadius = i(t); return arc(d); };
+    });
+  };
+};
+
+function plotRace(censusData) {
   var race = censusData.race;
   var keys = Object.keys(race);
+
   var data = keys.filter( function(key) {
     return key !== "true";
   }).map( function(key){
@@ -94,47 +106,52 @@ function plotData(censusData) {
   });
   console.log(race, keys, data);
 
-  var canvas = document.querySelector(".race");
-  var context = canvas.getContext("2d");
+  var div =  d3.select(".race");
 
-  var width = canvas.width,
-      height = canvas.height,
+  div.selectAll("p")
+      .data(keys)
+      .text(function(d) { return d; })
+    .enter().append("p")
+      .text(function(d) { return d; });
+
+  var container = div.node().parentElement;
+  var width = container.offsetWidth - 25,
+      height = 300,
       outerRadius = height / 2 - 30,
       innerRadius = outerRadius / 3;
 
-  var arc = d3_shape.arc()
+  var arc = d3.svg.arc()
       .innerRadius(innerRadius)
       .outerRadius(outerRadius)
-      .context(context);
 
-  var pie = d3_shape.pie();
+  var pie = d3.layout.pie();
 
-  var ease = d3_ease.cubicInOut,
+  var ease = d3.ease('cubic-in-out'),
       duration = 2500;
 
-  d3_timer.timer(function(elapsed) {
-    var t = ease(1 - Math.abs((elapsed % duration) / duration - 0.5) * 2),
-        arcs = pie.padAngle(0.06 * t)(data);
+  var svg = div.append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-    context.save();
-    context.clearRect(0, 0, width, height);
-    context.translate(width / 2, height / 2);
+  var color = d3.scale.category20();
 
-    context.beginPath();
-    arcs.forEach(arc.padAngle(0));
-    context.lineWidth = 1;
-    context.strokeStyle = "#777";
-    context.stroke();
+  var path = svg.selectAll("path")
+      .data(data)
+    .enter().append("path")
+      .style("fill", function(d, i) { return color(i); })
 
-    context.beginPath();
-    arcs.forEach(arc.padAngle(0.06 * t));
-    context.fillStyle = "#ccc";
-    context.fill();
-    context.lineWidth = 1.5;
-    context.lineJoin = "round";
-    context.strokeStyle = "#000";
-    context.stroke();
+  d3.timer(function(elapsed) {
+    var t = ease(1 - Math.abs((elapsed % duration) / duration - 0.5) * 2);
+    var arcs = pie.padAngle(0.06 * t)(data);
 
-    context.restore();
+    path
+        .data(arcs)
+        .attr("d", arc)
+        .on("mouseover", arcTween(outerRadius, 0))
+        .on("mouseout", arcTween(outerRadius - 20, 150));
   });
+
+
 }

@@ -63,11 +63,8 @@ body{
     overflow:hidden;
 }
 
-.race div {
-  font: 10px sans-serif;
-  background-color: steelblue;
-  text-align: right;
-  padding: 3px;
-  margin: 1px;
-  color: white;
+.race path {
+  stroke: #000;
+  stroke-width: 1.5px;
+  stroke-linejoin: round;
 }

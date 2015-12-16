@@ -14,7 +14,7 @@ app.get('/', function(req, res){
 
 app.post('/coords/', function(req, res) {
   request.convertCoords(req.body.lat, req.body.lng, function(err, result){
-    res.send(result);
+    res.end(JSON.stringify(result));
   });
 })
 
