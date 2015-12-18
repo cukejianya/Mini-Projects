@@ -1,6 +1,7 @@
 var map;
 var geolocate = {};
 var place;
+var bindedCreatePlot;
 var needToRemove = false;
 
 function initMap() {
@@ -37,17 +38,7 @@ function initMap() {
       lng: place.geometry.location.lng(),
     }
 
-    $.ajax({
-        type: "POST",
-        url: '/coords/',
-        data: geolocate,
-        success: function(data) {
-          plotData(JSON.parse(data));
-        },
-        error: function(jqXHR, textstatus, errorThrown) {
-            alert('text status ' + textstatus + ', err ' + errorThrown);
-        }
-    });
+    serRequest(geolocate)
 
     if (place.geometry.viewport) {
       map.fitBounds(place.geometry.viewport);
@@ -70,35 +61,47 @@ function initMap() {
   });
 }
 
-$(window).resize(respondCanvas);
-
-function respondCanvas() {
-  var canvas = document.querySelector(".race");
-  var container = canvas.parentElement;
-  //console.log("container", container);
-
-  canvas.width = container.offsetWidth - 50; //max width
-
-  //Call a function to redraw other content (texts, images etc)
+function serRequest(geolocate) {
+  $.ajax({
+      type: "POST",
+      url: '/coords/',
+      data: geolocate,
+      success: function(data) {
+        data = JSON.parse(data);
+        bindedCreatePlot = createPlot.bind(null, data);
+        createPlot(data);
+      },
+      error: function(jqXHR, textstatus, errorThrown) {
+          alert('text status ' + textstatus + ', err ' + errorThrown);
+      }
+  });
 }
-respondCanvas();
-function plotData(censusData){
-  plotRace(censusData);
+
+$(window).resize(function(){
+  bindedCreatePlot();
+});
+
+function createPlot(censusData) {
+  var raceHTML = d3.select(".race");
+  console.log(censusData);
+  var raceData = censusData.race;
+
+  if (needToRemove) {
+    removePlot();
+  } else {
+    needToRemove = true;
+  }
+
+  plotRace(raceHTML, raceData);
 }
 
-function arcTween(outerRadius, delay) {
-  return function() {
-    d3.select(this).transition().delay(delay).attrTween("d", function(d) {
-      var i = d3.interpolate(d.outerRadius, outerRadius);
-      return function(t) { d.outerRadius = i(t); return arc(d); };
-    });
-  };
-};
+function removePlot() {
+  d3.select(".race").select("table").selectAll("tr").remove();
+  d3.select(".race").select("svg").remove();
+}
 
-function plotRace(censusData) {
-  var race = censusData.race;
+function plotRace(div, race) {
   var keys = Object.keys(race).splice(1);
-
 
   var data = keys.filter( function(key) {
     return (key !== "total");
@@ -106,19 +109,9 @@ function plotRace(censusData) {
     console.log(key);
       return race[key]
   });
-  //console.log(race, keys, data);
-
-  var div =  d3.select(".race");
 
   var color = d3.scale.category20();
 
-  if (needToRemove) {
-    div.select("table").selectAll("tr").remove();
-    div.select("svg").remove();
-  } else {
-    needToRemove = true;
-  }
-  
   var selection = div.select("table").selectAll("tr")
       .data(keys)
   var tr = selection.enter().append("tr")
@@ -142,7 +135,7 @@ function plotRace(censusData) {
 
   var container = div.node().parentElement;
   var width = container.offsetWidth - 25,
-      height = 300,
+      height = container.offsetWidth - 25,
       outerRadius = height / 2 - 30,
       innerRadius = outerRadius / 3;
 
@@ -175,6 +168,4 @@ function plotRace(censusData) {
         .data(arcs)
         .attr("d", arc);
   });
-
-
 }
