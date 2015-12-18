@@ -30,7 +30,7 @@ function initMap() {
     if (!place.geometry) {
       return;
     }
-    console.log(place.address_components);
+    //console.log(place.address_components);
     var geolocate = {
       lat: place.geometry.location.lat(),
       lng: place.geometry.location.lng(),
@@ -74,7 +74,7 @@ $(window).resize(respondCanvas);
 function respondCanvas() {
   var canvas = document.querySelector(".race");
   var container = canvas.parentElement;
-  console.log("container", container);
+  //console.log("container", container);
 
   canvas.width = container.offsetWidth - 50; //max width
 
@@ -96,23 +96,45 @@ function arcTween(outerRadius, delay) {
 
 function plotRace(censusData) {
   var race = censusData.race;
-  var keys = Object.keys(race);
+  var keys = Object.keys(race).splice(1);
+  var needToRemove = false;
 
   var data = keys.filter( function(key) {
-    return key !== "true";
+    return (key !== "total");
   }).map( function(key){
     console.log(key);
       return race[key]
   });
-  console.log(race, keys, data);
+  //console.log(race, keys, data);
 
   var div =  d3.select(".race");
 
-  div.selectAll("p")
+  var color = d3.scale.category20();
+
+  if (needToRemove) {
+    div.select("table").selectAll("tr").remove();
+    div.select("svg").remove();
+  }
+  var selection = div.select("table").selectAll("tr")
       .data(keys)
-      .text(function(d) { return d; })
-    .enter().append("p")
-      .text(function(d) { return d; });
+  var tr = selection.enter().append("tr")
+
+  tr.append("td")
+      .text("HH")
+      .style("background", function(d, i){
+        return color(i);
+      })
+      .style("color", function(d, i){
+        return color(i);
+      });
+
+  tr.append("td").text( function(d, i) {
+    var str = d.split(" ").map(function(elm) {
+      return elm[0].toUpperCase() + elm.slice(1);
+    }) .join(" ");
+
+    return " "+ str + ": " + race[d];
+  });
 
   var container = div.node().parentElement;
   var width = container.offsetWidth - 25,
@@ -135,12 +157,11 @@ function plotRace(censusData) {
   .append("g")
     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-  var color = d3.scale.category20();
 
   var path = svg.selectAll("path")
       .data(data)
     .enter().append("path")
-      .style("fill", function(d, i) { return color(i); })
+      .style("fill", function(d, i) { console.log(color.domain[i], color(i)); return color(i); })
 
   d3.timer(function(elapsed) {
     var t = ease(1 - Math.abs((elapsed % duration) / duration - 0.5) * 2);
@@ -148,9 +169,7 @@ function plotRace(censusData) {
 
     path
         .data(arcs)
-        .attr("d", arc)
-        .on("mouseover", arcTween(outerRadius, 0))
-        .on("mouseout", arcTween(outerRadius - 20, 150));
+        .attr("d", arc);
   });
 
 
