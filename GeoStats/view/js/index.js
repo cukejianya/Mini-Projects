@@ -1,6 +1,7 @@
 var map;
 var geolocate = {};
 var place;
+var needToRemove = false;
 
 function initMap() {
   map = new google.maps.Map(document.getElementById('map-canvas'), {
@@ -97,7 +98,7 @@ function arcTween(outerRadius, delay) {
 function plotRace(censusData) {
   var race = censusData.race;
   var keys = Object.keys(race).splice(1);
-  var needToRemove = false;
+
 
   var data = keys.filter( function(key) {
     return (key !== "total");
@@ -114,7 +115,10 @@ function plotRace(censusData) {
   if (needToRemove) {
     div.select("table").selectAll("tr").remove();
     div.select("svg").remove();
+  } else {
+    needToRemove = true;
   }
+  
   var selection = div.select("table").selectAll("tr")
       .data(keys)
   var tr = selection.enter().append("tr")
