@@ -32,7 +32,7 @@ function initMap() {
     if (!place.geometry) {
       return;
     }
-    //console.log(place.address_components);
+    console.log(place.address_components);
     var geolocate = {
       lat: place.geometry.location.lat(),
       lng: place.geometry.location.lng(),
