@@ -33,11 +33,13 @@ function initMap() {
       return;
     }
     console.log(place.address_components);
+
     var geolocate = {
       lat: place.geometry.location.lat(),
       lng: place.geometry.location.lng(),
+      type: place.address_components[0].types[0]
     }
-
+    console.log(geolocate.type);
     serRequest(geolocate)
 
     if (place.geometry.viewport) {
@@ -118,10 +120,10 @@ function plotRace(div, race) {
 
   tr.append("td")
       .text("HH")
-      .style("background", function(d, i){
+      .style("background", function(d, i) {
         return color(i);
       })
-      .style("color", function(d, i){
+      .style("color", function(d, i) {
         return color(i);
       });
 

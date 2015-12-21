@@ -45,8 +45,33 @@ function reformatData(dict, data, callback) {
   }
 }
 
+function createQuery(fips, type) {
+  var fips = fips.split('');
+  var stateFIPS = fips.splice(0,2).join('');
+  var countyFIPS = fips.splice(0,3).join('');
+  var tractFIPS = fips.splice(0,6).join('');
+  var fipsArray = ['state:'+stateFIPS, 'county:'+countyFIPS, 'tract:'+tractFIPS];
+  console.log("country fips:",countyFIPS);
+  var query = {
+    key: '9690f87a492f7f74100be910a9dc9ce10b598f93',
+    for:'tract:'+tractFIPS,
+    in: 'state:'+stateFIPS+'+county:'+countyFIPS
+  };
+
+  if (type === "administrative_area_level_1") {
+    query.for = fipsArray[0];
+    delete query.in;
+  } else if (type === "administrative_area_level_2" || type === "locality") {
+    query.for = fipsArray[1];;
+    query.in = fipsArray[0]
+  }
+
+  return query;
+}
+
+
 //Main functions
-function convertCoords(latitude, longitude, callback) {
+function convertCoords(latitude, longitude, type, callback) {
   var query = {
     format: 'json',
     latitude: latitude,
@@ -61,9 +86,9 @@ function convertCoords(latitude, longitude, callback) {
   request(url, function getFIPS(error, response, body){
     if(error){ callback(error) };
     if (!error && response.statusCode == 200)
-      getGeoInfo(JSON.parse(body).Block.FIPS, callback);
+      getGeoInfo(JSON.parse(body).Block.FIPS, type, callback);
   })
-  console.log(variables);
+  //console.log(variables);
 }
 
 function getCensusData(type, query, callback){
@@ -71,7 +96,7 @@ function getCensusData(type, query, callback){
   var typeCode = getCode(typeDict);
   query.get = typeCode.sort().join();
   var url = formatURL('http','api.census.gov','/data/2010/sf1', query);
-
+  console.log(url);
   request(url, function(error, response, body) {
     if(error){ callback(error) };
     if (!error && response.statusCode == 200)
@@ -79,16 +104,9 @@ function getCensusData(type, query, callback){
   });
 }
 
-function getGeoInfo(fips, callback) {
-  fips = fips.split('');
-  var stateFIPS = fips.splice(0,2).join('');
-  var countyFIPS = fips.splice(0,3).join('');
-  var tractFIPS = fips.splice(0,6).join('');
-  var query = {
-    key: '9690f87a492f7f74100be910a9dc9ce10b598f93',
-    for:'tract:'+tractFIPS,
-    in: 'state:'+stateFIPS+'+county:'+countyFIPS
-  }
+function getGeoInfo(fips, type, callback) {
+
+  var query = createQuery(fips, type);
 
   var categories = Object.keys(variables);
   categories.forEach(function(elm, idx) {
