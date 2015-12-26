@@ -1,6 +1,7 @@
 var request = require('request');
 var path = require('path');
 var urlApi = require('url');
+var placesFIP = JSON.parse( JSON.stringify(require('../data/national_place.json')) );
 var variables;
 //Deep Copy Object
 var readyCount = 3;
@@ -45,25 +46,40 @@ function reformatData(dict, data, callback) {
   }
 }
 
-function createQuery(fips, type) {
+function createQuery(fips, type_place) {
   var fips = fips.split('');
   var stateFIPS = fips.splice(0,2).join('');
   var countyFIPS = fips.splice(0,3).join('');
   var tractFIPS = fips.splice(0,6).join('');
+  var placeFIPS;
+
   var fipsArray = ['state:'+stateFIPS, 'county:'+countyFIPS, 'tract:'+tractFIPS];
-  console.log("country fips:",countyFIPS);
+  console.log("FIP: %s-%s-%s",stateFIPS, countyFIPS, tractFIPS);
   var query = {
     key: '9690f87a492f7f74100be910a9dc9ce10b598f93',
     for:'tract:'+tractFIPS,
     in: 'state:'+stateFIPS+'+county:'+countyFIPS
   };
-
-  if (type === "administrative_area_level_1") {
+  console.log(type_place);
+  var cityTypes = ["CDP", "city", "town", "village", "borough"];
+  if (type_place[0] === "administrative_area_level_1") {
     query.for = fipsArray[0];
     delete query.in;
-  } else if (type === "administrative_area_level_2" || type === "locality") {
-    query.for = fipsArray[1];;
-    query.in = fipsArray[0]
+  } else if (type_place[0] === "administrative_area_level_2" ) {
+    query.for = fipsArray[1];
+    query.in = fipsArray[0];
+  } else if (type_place[0] === "locality" || type_place[0] == "sublocality_level_1") {
+    var placeDict = placesFIP[parseInt(stateFIPS) - 1];
+    var place = type_place[1];
+    cityTypes.some(function(elm) {
+      console.log(placeDict[place+" "+elm]);
+      if ( placeDict[place+" "+elm] ) {
+        query.for = 'place:' + placeDict[place+" "+elm]["placefp"]
+        query.in = fipsArray[0];
+        return true;
+      }
+      return false;
+    })
   }
 
   return query;
@@ -71,7 +87,7 @@ function createQuery(fips, type) {
 
 
 //Main functions
-function convertCoords(latitude, longitude, type, callback) {
+function convertCoords(latitude, longitude, type_place, callback) {
   var query = {
     format: 'json',
     latitude: latitude,
@@ -86,9 +102,22 @@ function convertCoords(latitude, longitude, type, callback) {
   request(url, function getFIPS(error, response, body){
     if(error){ callback(error) };
     if (!error && response.statusCode == 200)
-      getGeoInfo(JSON.parse(body).Block.FIPS, type, callback);
+      getGeoInfo(JSON.parse(body).Block.FIPS, type_place, callback);
   })
   //console.log(variables);
+}
+
+function getGeoInfo(fips, type_place, callback) {
+  var query = createQuery(fips, type_place);
+  var categories = Object.keys(variables);
+
+  categories.forEach(function(elm, idx) {
+    if (elm === "econ")
+      return;
+
+    getCensusData(elm, query.clone(), callback);
+  })
+
 }
 
 function getCensusData(type, query, callback){
@@ -102,20 +131,6 @@ function getCensusData(type, query, callback){
     if (!error && response.statusCode == 200)
       reformatData(typeDict, JSON.parse(body), callback);
   });
-}
-
-function getGeoInfo(fips, type, callback) {
-
-  var query = createQuery(fips, type);
-
-  var categories = Object.keys(variables);
-  categories.forEach(function(elm, idx) {
-    if (elm === "econ")
-      return;
-
-    getCensusData(elm, query.clone(), callback);
-  })
-
 }
 
 module.exports = {
