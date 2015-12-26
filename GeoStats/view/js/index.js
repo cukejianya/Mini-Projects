@@ -88,6 +88,7 @@ function createPlot(censusData) {
   var totalHTML = d3.select(".total");
   var raceHTML = d3.select(".race");
   console.log(censusData);
+  var totalData = censusData.race.total;
   var raceData = censusData.race;
 
   if (needToRemove) {
@@ -96,12 +97,20 @@ function createPlot(censusData) {
     needToRemove = true;
   }
 
+  plotTotal(totalHTML, totalData);
   plotRace(raceHTML, raceData);
 }
 
 function removePlot() {
+  d3.select(".total").select("h3").remove();
   d3.select(".race").select("table").selectAll("tr").remove();
   d3.select(".race").select("svg").remove();
+}
+
+function plotTotal(div, total) {
+  div.append("h3").text(function(){
+    return "Total Population: " + total;
+  })
 }
 
 function plotRace(div, race) {
@@ -118,7 +127,7 @@ function plotRace(div, race) {
 
   var selection = div.select("table").selectAll("tr")
       .data(keys)
-  var tr = selection.enter().append("tr")
+  var tr = selection.enter().append("tr");
 
   tr.append("td")
       .text("HH")
@@ -132,7 +141,7 @@ function plotRace(div, race) {
   tr.append("td").text( function(d, i) {
     var str = d.split(" ").map(function(elm) {
       return elm[0].toUpperCase() + elm.slice(1);
-    }) .join(" ");
+    }).join(" ");
 
     return " "+ str + ": " + race[d];
   });
