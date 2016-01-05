@@ -40,6 +40,7 @@ function reformatData(dict, data, callback) {
       }
     });
   });
+  //console.log(dict);
   readyCount--;
   if (readyCount < 1) {
     callback(null, variables);
@@ -60,7 +61,7 @@ function createQuery(fips, type_place) {
     for:'tract:'+tractFIPS,
     in: 'state:'+stateFIPS+'+county:'+countyFIPS
   };
-  console.log(type_place);
+  //console.log(type_place);
   var cityTypes = ["CDP", "city", "town", "village", "borough"];
   if (type_place[0] === "administrative_area_level_1") {
     query.for = fipsArray[0];
@@ -72,9 +73,9 @@ function createQuery(fips, type_place) {
     var placeDict = placesFIP[parseInt(stateFIPS) - 1];
     var place = type_place[1];
     cityTypes.some(function(elm) {
-      console.log(placeDict[place+" "+elm]);
+      //console.log(placeDict[place+" "+elm]);
       if ( placeDict[place+" "+elm] ) {
-        query.for = 'place:' + placeDict[place+" "+elm]["placefp"]
+        query.for = 'place:' + placeDict[place+" "+elm]["placefp"];
         query.in = fipsArray[0];
         return true;
       }
@@ -120,16 +121,17 @@ function getGeoInfo(fips, type_place, callback) {
 
 }
 
-function getCensusData(type, query, callback){
+function getCensusData(type, query, callback) {
   var typeDict = variables[type];
   var typeCode = getCode(typeDict);
   query.get = typeCode.sort().join();
   var url = formatURL('http','api.census.gov','/data/2010/sf1', query);
-  console.log(url);
+  //console.log(url);
   request(url, function(error, response, body) {
     if(error){ callback(error) };
     if (!error && response.statusCode == 200)
       reformatData(typeDict, JSON.parse(body), callback);
+      console.log(typeDict);
   });
 }
 

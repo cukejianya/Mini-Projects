@@ -87,9 +87,14 @@ $(window).resize(function(){
 function createPlot(censusData) {
   var totalHTML = d3.select(".total");
   var raceHTML = d3.select(".race");
-  console.log(censusData);
+  var genderAgeHTML = d3.select(".genderAge");
+  //console.log(censusData);
   var totalData = censusData.race.total;
   var raceData = censusData.race;
+  var femaleData = censusData.femaleAge;
+  var maleData = censusData.maleAge;
+  console.log(maleData);
+
 
   if (needToRemove) {
     removePlot();
@@ -99,12 +104,14 @@ function createPlot(censusData) {
 
   plotTotal(totalHTML, totalData);
   plotRace(raceHTML, raceData);
+  plotGenderAge(genderAgeHTML);
 }
 
 function removePlot() {
   d3.select(".total").select("h3").remove();
   d3.select(".race").select("table").selectAll("tr").remove();
   d3.select(".race").select("svg").remove();
+  d3.select(".genderAge").select("svg").remove();
 }
 
 function plotTotal(div, total) {
@@ -119,7 +126,7 @@ function plotRace(div, race) {
   var data = keys.filter( function(key) {
     return (key !== "total");
   }).map( function(key){
-    console.log(key);
+    //console.log(key);
       return race[key]
   });
 
@@ -171,7 +178,10 @@ function plotRace(div, race) {
   var path = svg.selectAll("path")
       .data(data)
     .enter().append("path")
-      .style("fill", function(d, i) { console.log(color.domain[i], color(i)); return color(i); })
+      .style("fill", function(d, i) {
+        //console.log(color.domain[i], color(i));
+        return color(i);
+      })
 
   d3.timer(function(elapsed) {
     var t = ease(1 - Math.abs((elapsed % duration) / duration - 0.5) * 2);
@@ -184,16 +194,17 @@ function plotRace(div, race) {
 }
 
 function plotGenderAge() {
-  var n = 4, // number of layers
+  var n = 2, // number of layers
       m = 58, // number of samples per layer
       stack = d3.layout.stack(),
       layers = stack(d3.range(n).map(function() { return bumpLayer(m, .1); })),
       yGroupMax = d3.max(layers, function(layer) { return d3.max(layer, function(d) { return d.y; }); }),
       yStackMax = d3.max(layers, function(layer) { return d3.max(layer, function(d) { return d.y0 + d.y; }); });
 
+  var container = div.node().parentElement;
   var margin = {top: 40, right: 10, bottom: 20, left: 10},
-      width = 960 - margin.left - margin.right,
-      height = 500 - margin.top - margin.bottom;
+      width = container.offsetWidth - margin.left - margin.right,
+      height = (container.offsetWidth / 2) - margin.top - margin.bottom;
 
   var x = d3.scale.ordinal()
       .domain(d3.range(m))
@@ -213,7 +224,7 @@ function plotGenderAge() {
       .tickPadding(6)
       .orient("bottom");
 
-  var svg = d3.select("body").append("svg")
+  var svg = d3.select(".genderAge").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
     .append("g")
