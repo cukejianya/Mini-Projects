@@ -104,7 +104,7 @@ function createPlot(censusData) {
 
   plotTotal(totalHTML, totalData);
   plotRace(raceHTML, raceData);
-  plotGenderAge(genderAgeHTML);
+  plotGenderAge(genderAgeHTML, [maleData,femaleData]);
 }
 
 function removePlot() {
@@ -193,16 +193,24 @@ function plotRace(div, race) {
   });
 }
 
-function plotGenderAge() {
+function plotGenderAge(div, genderAge) {
+  var keys = Object.keys(genderAge[0]);
+  keys.shift();
+  console.log(keys);
   var n = 2, // number of layers
-      m = 58, // number of samples per layer
+      m = 9, // number of samples per layer
       stack = d3.layout.stack(),
-      layers = stack(d3.range(n).map(function() { return bumpLayer(m, .1); })),
+      layers = stack( d3.range(n).map( function(idx) {
+        return keys.map( function(d, i) {
+          console.log(genderAge[idx][d])
+          return { x: i, y: Math.max(0, parseInt(genderAge[idx][d])) };
+        });;
+      })),
       yGroupMax = d3.max(layers, function(layer) { return d3.max(layer, function(d) { return d.y; }); }),
       yStackMax = d3.max(layers, function(layer) { return d3.max(layer, function(d) { return d.y0 + d.y; }); });
 
   var container = div.node().parentElement;
-  var margin = {top: 40, right: 10, bottom: 20, left: 10},
+  var margin = {top: 40, right: 40, bottom: 20, left: 10},
       width = container.offsetWidth - margin.left - margin.right,
       height = (container.offsetWidth / 2) - margin.top - margin.bottom;
 
@@ -224,7 +232,7 @@ function plotGenderAge() {
       .tickPadding(6)
       .orient("bottom");
 
-  var svg = d3.select(".genderAge").append("svg")
+  var svg = div.append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
     .append("g")
@@ -308,6 +316,6 @@ function plotGenderAge() {
     var a = [], i;
     for (i = 0; i < n; ++i) a[i] = o + o * Math.random();
     for (i = 0; i < 5; ++i) bump(a);
-    return a.map(function(d, i) { return {x: i, y: Math.max(0, d)}; });
+    return arr.map(function(d, i) { return {x: i, y: Math.max(0, d)}; });
   }
 }
