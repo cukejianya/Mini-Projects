@@ -203,7 +203,7 @@ function plotGenderAge(div, genderAge) {
       stack = d3.layout.stack(),
       layers = stack( d3.range(n).map( function(idx) {
         return keys.map( function(d, i) {
-          console.log(genderAge[idx][d])
+          //console.log(genderAge[idx][d])
           return { x: i, y: Math.max(0, parseInt(genderAge[idx][d])) };
         });;
       })),
@@ -211,6 +211,9 @@ function plotGenderAge(div, genderAge) {
       yStackMax = d3.max(layers, function(layer) { return d3.max(layer, function(d) { return d.y0 + d.y; }); });
 
   var container = div.node().parentElement;
+
+  div.node().type = "stack"
+  console.log(div, div.node().type)
   var margin = {top: 40, right: 40, bottom: 70, left: 10},
       width = container.offsetWidth - margin.left - margin.right,
       height = (container.offsetWidth) - margin.top - margin.bottom;
@@ -273,32 +276,36 @@ function plotGenderAge(div, genderAge) {
       .attr("transform", "rotate(60)")
       .style("text-anchor", "start");
 
-  d3.selectAll("input").on("change", change);
-
   var timeout = setTimeout(function() {
     d3.select("input[value=\"grouped\"]").property("checked", true).each(change);
   }, 2000);
 
-  function change() {
-    clearTimeout(timeout);
-    if (this.value === "grouped") transitionGrouped();
-    else transitionStacked();
+  function change(transitionStacked, transitionGrouped) {
+    //clearTimeout(timeout);
+    if (this.type === "stack") {
+      transitionGrouped();
+      this.type = "group";
+    }
+    else {
+      transitionStacked();
+      this.type = "stack";
+    }
   }
 
-  function transitionGrouped() {
+  function transitionGrouped(y, yGroupMax, x, rect, height, keys) {
     y.domain([0, yGroupMax]);
 
     rect.transition()
         .duration(500)
         .delay(function(d, i) { return i * 10; })
-        .attr("x", function(d, i, j) { return x(d.x) + x.rangeBand() / n * j; })
+        .attr("x", function(d, i, j) { return x(keys[d.x]) + x.rangeBand() / n * j; })
         .attr("width", x.rangeBand() / n)
       .transition()
         .attr("y", function(d) { return y(d.y); })
         .attr("height", function(d) { return height - y(d.y); });
   }
 
-  function transitionStacked() {
+  function transitionStacked(y, yStackMax, x, rect, keys) {
     y.domain([0, yStackMax]);
 
     rect.transition()
@@ -307,10 +314,14 @@ function plotGenderAge(div, genderAge) {
         .attr("y", function(d) { return y(d.y0 + d.y); })
         .attr("height", function(d) { return y(d.y0) - y(d.y0 + d.y); })
       .transition()
-        .attr("x", function(d) { return x(d.x); })
+        .attr("x", function(d) { return x(keys[d.x]); })
         .attr("width", x.rangeBand());
   }
 
+  div.on("click", change.bind(div.node(),
+    transitionStacked.bind(null, y, yStackMax, x, rect, keys),
+    transitionGrouped.bind(null, y, yGroupMax, x, rect, height, keys)
+  ))
   // Inspired by Lee Byron's test data generator.
   function bumpLayer(n, o) {
 
@@ -329,4 +340,6 @@ function plotGenderAge(div, genderAge) {
     for (i = 0; i < 5; ++i) bump(a);
     return arr.map(function(d, i) { return {x: i, y: Math.max(0, d)}; });
   }
+
+
 }
