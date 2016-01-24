@@ -2,6 +2,7 @@ var map;
 var geolocate = {};
 var place;
 var bindedCreatePlot;
+var switchGenderGraph;
 var needToRemove = false;
 
 function initMap() {
@@ -210,12 +211,12 @@ function plotGenderAge(div, genderAge) {
       yStackMax = d3.max(layers, function(layer) { return d3.max(layer, function(d) { return d.y0 + d.y; }); });
 
   var container = div.node().parentElement;
-  var margin = {top: 40, right: 40, bottom: 20, left: 10},
+  var margin = {top: 40, right: 40, bottom: 40, left: 10},
       width = container.offsetWidth - margin.left - margin.right,
-      height = (container.offsetWidth / 2) - margin.top - margin.bottom;
+      height = (container.offsetWidth) - margin.top - margin.bottom;
 
   var x = d3.scale.ordinal()
-      .domain(d3.range(m))
+      .domain(keys)
       .rangeRoundBands([0, width], .08);
 
   var y = d3.scale.linear()
@@ -247,11 +248,14 @@ function plotGenderAge(div, genderAge) {
   var rect = layer.selectAll("rect")
       .data(function(d) { return d; })
     .enter().append("rect")
-      .attr("x", function(d) { return x(d.x); })
+      .attr("x", function(d) {
+        console.log(x, x(keys[d.x]), d.x, d);
+        return x(keys[d.x]);
+      })
       .attr("y", height)
       .attr("width", x.rangeBand())
       .attr("height", 0);
-
+  console.log('This is x', x)
   rect.transition()
       .delay(function(d, i) { return i * 10; })
       .attr("y", function(d) { return y(d.y0 + d.y); })
@@ -260,7 +264,13 @@ function plotGenderAge(div, genderAge) {
   svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
+      .call(xAxis)
+    .selectAll("text")
+      .attr("y", 0)
+      .attr("x", 9)
+      .attr("dy", ".35em")
+      .attr("transform", "rotate(90)")
+      .style("text-anchor", "start");
 
   d3.selectAll("input").on("change", change);
 
