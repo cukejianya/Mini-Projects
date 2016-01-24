@@ -211,7 +211,7 @@ function plotGenderAge(div, genderAge) {
       yStackMax = d3.max(layers, function(layer) { return d3.max(layer, function(d) { return d.y0 + d.y; }); });
 
   var container = div.node().parentElement;
-  var margin = {top: 40, right: 40, bottom: 40, left: 10},
+  var margin = {top: 40, right: 40, bottom: 70, left: 10},
       width = container.offsetWidth - margin.left - margin.right,
       height = (container.offsetWidth) - margin.top - margin.bottom;
 
@@ -229,9 +229,10 @@ function plotGenderAge(div, genderAge) {
 
   var xAxis = d3.svg.axis()
       .scale(x)
-      .tickSize(0)
+      .tickSize(1)
       .tickPadding(6)
       .orient("bottom");
+
 
   var svg = div.append("svg")
       .attr("width", width + margin.left + margin.right)
@@ -255,7 +256,7 @@ function plotGenderAge(div, genderAge) {
       .attr("y", height)
       .attr("width", x.rangeBand())
       .attr("height", 0);
-  console.log('This is x', x)
+
   rect.transition()
       .delay(function(d, i) { return i * 10; })
       .attr("y", function(d) { return y(d.y0 + d.y); })
@@ -269,7 +270,7 @@ function plotGenderAge(div, genderAge) {
       .attr("y", 0)
       .attr("x", 9)
       .attr("dy", ".35em")
-      .attr("transform", "rotate(90)")
+      .attr("transform", "rotate(60)")
       .style("text-anchor", "start");
 
   d3.selectAll("input").on("change", change);
