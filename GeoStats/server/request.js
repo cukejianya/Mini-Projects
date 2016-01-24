@@ -2,9 +2,7 @@ var request = require('request');
 var path = require('path');
 var urlApi = require('url');
 var placesFIP = JSON.parse( JSON.stringify(require('../data/national_place.json')) );
-var variables;
-//Deep Copy Object
-var readyCount = 3;
+var variables, readyCount;
 
 //helper functions
 function formatURL(protocol, host, path, queryObj){
@@ -33,7 +31,7 @@ function reformatData(dict, data, callback) {
       var data_idx = data[0].indexOf(code);
       dict[key][idx] = parseInt(data[1][data_idx]);
 
-      if(dict[key].length === (idx + 1)){
+      if(dict[key].length === (idx + 1)) {
         dict[key] = dict[key].reduce(function(prev, current) {
           return prev + current;
         }, 0);
@@ -42,6 +40,7 @@ function reformatData(dict, data, callback) {
   });
   //console.log(dict);
   readyCount--;
+  console.log(readyCount)
   if (readyCount < 1) {
     callback(null, variables);
   }
@@ -55,7 +54,7 @@ function createQuery(fips, type_place) {
   var placeFIPS;
 
   var fipsArray = ['state:'+stateFIPS, 'county:'+countyFIPS, 'tract:'+tractFIPS];
-  console.log("FIP: %s-%s-%s",stateFIPS, countyFIPS, tractFIPS);
+  //console.log("FIP: %s-%s-%s",stateFIPS, countyFIPS, tractFIPS);
   var query = {
     key: '9690f87a492f7f74100be910a9dc9ce10b598f93',
     for:'tract:'+tractFIPS,
@@ -96,6 +95,7 @@ function convertCoords(latitude, longitude, type_place, callback) {
     showall: false
   }
   var url = formatURL('http','data.fcc.gov', '/api/block/find', query);
+  readyCount = 3;
   variables = JSON.parse( JSON.stringify(
     require('./data/censusVariables.json')
   ));;
