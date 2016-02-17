@@ -13,6 +13,7 @@ app.get('/', function(req, res){
 });
 
 app.post('/coords/', function(req, res) {
+  console.log("Data recieved")
   request.convertCoords(req.body.lat, req.body.lng, [req.body.type, req.body.place], function(err, result){
     console.log("Data sent: \n",result);
     res.end(JSON.stringify(result));

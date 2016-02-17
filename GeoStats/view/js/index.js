@@ -2,7 +2,6 @@ var map;
 var geolocate = {};
 var place;
 var bindedCreatePlot;
-var switchGenderGraph;
 var needToRemove = false;
 
 function initMap() {
