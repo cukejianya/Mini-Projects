@@ -70,3 +70,5 @@ function plotRace(div, race) {
         .attr("d", arc);
   });
 }
+
+module.exports = plotRace;

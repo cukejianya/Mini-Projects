@@ -145,5 +145,5 @@ function plotGenderAge(div, genderAge) {
     return arr.map(function(d, i) { return {x: i, y: Math.max(0, d)}; });
   }
 
-
 }
+module.exports = plotGenderAge;

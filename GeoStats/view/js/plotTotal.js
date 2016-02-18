@@ -3,3 +3,5 @@ function plotTotal(div, total) {
     return "Total Population: " + total;
   })
 }
+
+module.exports = plotTotal;

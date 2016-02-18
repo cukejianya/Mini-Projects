@@ -1,4 +1,8 @@
+var D = require('d.js');
+var map;
+
 function initMap() {
+  var deferred = D();
   map = new google.maps.Map(document.getElementById('map-canvas'), {
     center: {lat: 41.850033, lng: -87.6500523},
     zoom: 4
@@ -35,7 +39,7 @@ function initMap() {
       place: place.address_components[0].long_name
     }
     console.log(geolocate.type);
-    serRequest(geolocate);
+    deferred.resolve(geolocate);
 
     if (place.geometry.viewport) {
       map.fitBounds(place.geometry.viewport);
@@ -56,6 +60,8 @@ function initMap() {
         place.formatted_address);
     infowindow.open(map, marker);
   });
+
+  return deferred.promise;
 }
 
-module.exports = initMap()
+module.exports = initMap;
