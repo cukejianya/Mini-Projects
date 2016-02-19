@@ -55,11 +55,17 @@ function initMap() {
     });
     marker.setVisible(true);
 
-    infowindow.setContent('<div><strong>' + place.name + '</strong><br>' +
+    infowindow.setContent(
+      '<div><strong>' + place.name + '</strong><br>' +
         'Place ID: ' + place.place_id + '<br>' +
-        place.formatted_address);
+        place.formatted_address +
+      "<br><div class='race' style='height:400; display: inline-block;'><table></table></div>" +
+    "<br><div class='genderAge' style='height:400; display: inline-block;'></div>" +
+    "</div>");
     infowindow.open(map, marker);
   });
+
+  console.log(infowindow);
 
   return deferred.promise;
 }

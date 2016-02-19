@@ -32,8 +32,8 @@ function plotRace(div, race) {
   });
 
   var container = div.node().parentElement;
-  var width = container.offsetWidth - 25,
-      height = container.offsetWidth - 25,
+  var width = 200 - 25,
+      height = 200 - 25,
       outerRadius = height / 2 - 30,
       innerRadius = outerRadius / 3;
 

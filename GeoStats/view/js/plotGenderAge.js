@@ -19,8 +19,8 @@ function plotGenderAge(div, genderAge) {
   div.node().type = "stack"
   console.log(div, div.node().type)
   var margin = {top: 40, right: 40, bottom: 70, left: 10},
-      width = container.offsetWidth - margin.left - margin.right,
-      height = (container.offsetWidth) - margin.top - margin.bottom;
+      width = 200 - margin.left - margin.right,
+      height = (200) - margin.top - margin.bottom;
 
   var x = d3.scale.ordinal()
       .domain(keys)
