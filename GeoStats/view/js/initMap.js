@@ -1,6 +1,26 @@
 var D = require('d.js');
 var map;
 
+function offsetMap(latlng,offsetx,offsety) {
+  var scale = Math.pow(2, map.getZoom());
+  var nw = new google.maps.LatLng(
+      map.getBounds().getNorthEast().lat(),
+      map.getBounds().getSouthWest().lng()
+  );
+
+  var worldCoordinateCenter = map.getProjection().fromLatLngToPoint(latlng);
+  var pixelOffset = new google.maps.Point((offsetx/scale) || 0,(offsety/scale) ||0)
+
+  var worldCoordinateNewCenter = new google.maps.Point(
+      worldCoordinateCenter.x - pixelOffset.x,
+      worldCoordinateCenter.y + pixelOffset.y
+  );
+
+  var newCenter = map.getProjection().fromPointToLatLng(worldCoordinateNewCenter);
+
+  map.setCenter(newCenter);
+}
+
 function initMap() {
   var deferred = D();
   map = new google.maps.Map(document.getElementById('map-canvas'), {
@@ -14,8 +34,9 @@ function initMap() {
   };
 
   autocomplete = new google.maps.places.Autocomplete(input, options);
-  var infowindow = new google.maps.InfoWindow();
-
+  var infowindow = new google.maps.InfoWindow({
+        maxWidth: 700
+  });
   var marker = new google.maps.Marker({
     map: map
   });
@@ -38,13 +59,13 @@ function initMap() {
       type: place.address_components[0].types[0],
       place: place.address_components[0].long_name
     }
-    console.log(geolocate.type);
+    console.log(geolocate.type, "Place Geometry",place.geometry.location);
     deferred.resolve(geolocate);
 
     if (place.geometry.viewport) {
       map.fitBounds(place.geometry.viewport);
     } else {
-      map.setCenter(place.geometry.location);
+      offsetMap(place.geometry.location,0,700)
       map.setZoom(17);
     }
 
@@ -54,14 +75,16 @@ function initMap() {
       location: place.geometry.location
     });
     marker.setVisible(true);
-
     infowindow.setContent(
       '<div><strong>' + place.name + '</strong><br>' +
-        'Place ID: ' + place.place_id + '<br>' +
-        place.formatted_address +
-      "<br><div class='race' style='height:400; display: inline-block;'><table></table></div>" +
-    "<br><div class='genderAge' style='height:400; display: inline-block;'></div>" +
-    "</div>");
+      'Place ID: ' + place.place_id + '<br>' +
+      place.formatted_address +
+      '<br><br><strong>Race</strong><br>' +
+      "<div class='race' style='height:350; width:900 ; display: inline-block;'><table class='left'></table></div>" +
+      '<br><br><strong>Gender and Age</strong><br>' +
+      "<br><div class='genderAge' style='height:350; display: inline-block;'><table class='left'></table></div>" +
+      "</div>");
+
     infowindow.open(map, marker);
   });
 
