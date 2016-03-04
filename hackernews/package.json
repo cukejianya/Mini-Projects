@@ -1,0 +1,27 @@
+{
+  "name": "hn",
+  "version": "0.1.0",
+  "description": "recreate hackernews using reactjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "browserify":{
+    "transform": [
+      ["reactify"]
+    ]
+  },
+  "author": "Chinedum Ukejianya",
+  "license": "MIT",
+  "dependencies": {
+    "jquery": "^2.2.1",
+    "lodash": "^4.6.1",
+    "moment": "^2.11.2",
+    "react": "^0.14.7"
+  },
+  "devDependencies": {
+    "browserify": "^13.0.0",
+    "reactify": "^1.1.1",
+    "watchify": "^3.7.0"
+  }
+}
