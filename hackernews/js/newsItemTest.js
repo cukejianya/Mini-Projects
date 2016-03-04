@@ -1,9 +1,9 @@
 var $ = require('jquery');
-var NewsItem = require('./NewsItem');
+var NewsItem = require('./newsItem');
 var React = require('react');
 
 $.ajax({
-  url: '/json/items.json'
+  url: '/json/sample.json'
 }).then(function (items) {
   // Log the data so we can inspect it in the developer console.
   console.log('items', items);
