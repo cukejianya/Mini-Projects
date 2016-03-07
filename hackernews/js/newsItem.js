@@ -23,7 +23,7 @@ var NewsItem = React.createClass({
         </a>&nbsp;
         {moment.utc(this.props.item.time * 1000).fromNow()} | {this.getCommentLink()}
       </div>
-    )
+    );
   },
   getTitle: function() {
     return (
@@ -38,11 +38,31 @@ var NewsItem = React.createClass({
   getDomain: function() {
     return url.parse(this.props.item.url).hostname;
   },
+  getRank: function() {
+    return (
+      <div className="newsItem-rank">
+        {this.props.rank}.
+      </div>
+    );
+  },
+  getVote: function() {
+    return (
+      <div className="newsItem-vote">
+        <a href={'https://news.ycombinator.com/vote?for=' + this.props.item.id + '&dir=up&whence=news'}>
+          <img src="../img/grayarrow2x.gif" width="10" />
+        </a>
+      </div>
+    );
+  },
   render: function () {
     return (
       <div className="newsItem">
-        {this.getTitle()}
-        {this.getSubtext()}
+        {this.getRank()}
+        {this.getVote()}
+        <div className="newsItem-itemText">
+          {this.getTitle()}
+          {this.getSubtext()}
+        </div>
       </div>
     );
   }

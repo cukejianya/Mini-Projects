@@ -1585,7 +1585,7 @@ var NewsItem = React.createClass({displayName: "NewsItem",
         ), " ", 
         moment.utc(this.props.item.time * 1000).fromNow(), " | ", this.getCommentLink()
       )
-    )
+    );
   },
   getTitle: function() {
     return (
@@ -1600,11 +1600,31 @@ var NewsItem = React.createClass({displayName: "NewsItem",
   getDomain: function() {
     return url.parse(this.props.item.url).hostname;
   },
+  getRank: function() {
+    return (
+      React.createElement("div", {className: "newsItem-rank"}, 
+        this.props.rank, "."
+      )
+    );
+  },
+  getVote: function() {
+    return (
+      React.createElement("div", {className: "newsItem-vote"}, 
+        React.createElement("a", {href: 'https://news.ycombinator.com/vote?for=' + this.props.item.id + '&dir=up&whence=news'}, 
+          React.createElement("img", {src: "../img/grayarrow2x.gif", width: "10"})
+        )
+      )
+    );
+  },
   render: function () {
     return (
       React.createElement("div", {className: "newsItem"}, 
-        this.getTitle(), 
-        this.getSubtext()
+        this.getRank(), 
+        this.getVote(), 
+        React.createElement("div", {className: "newsItem-itemText"}, 
+          this.getTitle(), 
+          this.getSubtext()
+        )
       )
     );
   }
