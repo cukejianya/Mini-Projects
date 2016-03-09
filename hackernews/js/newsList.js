@@ -4,6 +4,14 @@ var NewsItem = require('./newsItem');
 var React = require('react');
 
 var NewsList = React.createClass({
+  getMore: function() {
+    return (
+      <div className="newsList-more">
+        <a className="newsList-moreLink" href="https://news.ycombinator.com/news?p=2">More</a>
+      </div>
+    );
+  },
+
   render: function() {
     return (
       <div className="newsList">
@@ -13,6 +21,7 @@ var NewsList = React.createClass({
               return <NewsItem key={item.id} item={item} rank={index + 1}/>;
             }.bind(this)).value()}
           </div>
+          {this.getMore()}
         </div>
     );
   }
