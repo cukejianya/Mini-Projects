@@ -40,14 +40,14 @@ function reformatData(dict, data, callback) {
   });
   //console.log(dict);
   readyCount--;
-  console.log(readyCount)
+  console.log(readyCount);
   if (readyCount < 1) {
     callback(null, variables);
   }
 }
 
 function createQuery(fips, type_place) {
-  var fips = fips.split('');
+  fips = fips.split('');
   var stateFIPS = fips.splice(0,2).join('');
   var countyFIPS = fips.splice(0,3).join('');
   var tractFIPS = fips.splice(0,6).join('');
@@ -74,12 +74,12 @@ function createQuery(fips, type_place) {
     cityTypes.some(function(elm) {
       //console.log(placeDict[place+" "+elm]);
       if ( placeDict[place+" "+elm] ) {
-        query.for = 'place:' + placeDict[place+" "+elm]["placefp"];
+        query.for = 'place:' + placeDict[place+" "+elm].placefp;
         query.in = fipsArray[0];
         return true;
       }
       return false;
-    })
+    });
   }
 
   return query;
@@ -93,18 +93,18 @@ function convertCoords(latitude, longitude, type_place, callback) {
     latitude: latitude,
     longitude: longitude,
     showall: false
-  }
+  };
   var url = formatURL('http','data.fcc.gov', '/api/block/find', query);
   readyCount = 3;
   variables = JSON.parse( JSON.stringify(
     require('./data/censusVariables.json')
-  ));;
+  ));
 
   request(url, function getFIPS(error, response, body){
-    if(error){ callback(error) };
+    if(error){ callback(error); }
     if (!error && response.statusCode == 200)
       getGeoInfo(JSON.parse(body).Block.FIPS, type_place, callback);
-  })
+  });
   //console.log(variables);
 }
 
@@ -117,7 +117,7 @@ function getGeoInfo(fips, type_place, callback) {
       return;
 
     getCensusData(elm, query.clone(), callback);
-  })
+  });
 
 }
 
@@ -128,7 +128,7 @@ function getCensusData(type, query, callback) {
   var url = formatURL('http','api.census.gov','/data/2010/sf1', query);
   //console.log(url);
   request(url, function(error, response, body) {
-    if(error){ callback(error) };
+    if(error){ callback(error); }
     if (!error && response.statusCode == 200)
       reformatData(typeDict, JSON.parse(body), callback);
       console.log(typeDict);
@@ -137,7 +137,7 @@ function getCensusData(type, query, callback) {
 
 module.exports = {
   convertCoords: convertCoords,
-}
+};
 
 Object.prototype.clone = function() {
   var that = this;
@@ -147,4 +147,4 @@ Object.prototype.clone = function() {
     return prev;
   }, {});
   return copy;
-}
+};

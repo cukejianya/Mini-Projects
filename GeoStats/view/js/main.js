@@ -48,5 +48,5 @@ $(document).ready(function()  {
     console.log(data);
     bindedCreatePlot = createPlot.bind(null, data);
     createPlot(data);
-  })
-})
+  });
+});

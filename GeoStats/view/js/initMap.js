@@ -9,7 +9,7 @@ function offsetMap(latlng,offsetx,offsety) {
   );
 
   var worldCoordinateCenter = map.getProjection().fromLatLngToPoint(latlng);
-  var pixelOffset = new google.maps.Point((offsetx/scale) || 0,(offsety/scale) ||0)
+  var pixelOffset = new google.maps.Point((offsetx/scale) || 0,(offsety/scale) ||0);
 
   var worldCoordinateNewCenter = new google.maps.Point(
       worldCoordinateCenter.x - pixelOffset.x,
@@ -58,14 +58,14 @@ function initMap() {
       lng: place.geometry.location.lng(),
       type: place.address_components[0].types[0],
       place: place.address_components[0].long_name
-    }
+    };
     console.log(geolocate.type, "Place Geometry",place.geometry.location);
     deferred.resolve(geolocate);
 
     if (place.geometry.viewport) {
       map.fitBounds(place.geometry.viewport);
     } else {
-      offsetMap(place.geometry.location,0,700)
+      offsetMap(place.geometry.location,0,700);
       map.setZoom(17);
     }
 

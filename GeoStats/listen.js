@@ -1,4 +1,4 @@
-var express = require('express')
+var express = require('express');
 var app = express();
 var bodyparser = require('body-parser');
 var path = require('path');
@@ -13,12 +13,12 @@ app.get('/', function(req, res){
 });
 
 app.post('/coords/', function(req, res) {
-  console.log("Data recieved")
+  console.log("Data recieved");
   request.convertCoords(req.body.lat, req.body.lng, [req.body.type, req.body.place], function(err, result){
     console.log("Data sent: \n",result);
     res.end(JSON.stringify(result));
   });
-})
+});
 
 app.listen(3000, function(){
   console.log('listening on *:3000');

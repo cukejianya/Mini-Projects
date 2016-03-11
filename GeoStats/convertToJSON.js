@@ -22,7 +22,7 @@ f.forEach(function(elm) {
   console.log(idx);
   if ( !(json[idx]) ) {
     json[idx] = {state: elm[0]};
-  };
+  }
 
   json[idx][elm[3]] = {};
   category.forEach( function(cat, jdx) {

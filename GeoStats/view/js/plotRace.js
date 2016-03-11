@@ -5,13 +5,13 @@ function plotRace(div, race) {
     return (key !== "total");
   }).map( function(key){
     //console.log(key);
-      return race[key]
+      return race[key];
   });
 
   var color = d3.scale.category20();
 
   var selection = div.select("table").selectAll("tr")
-      .data(keys)
+      .data(keys);
   var tr = selection.enter().append("tr");
 
   tr.append("td")
@@ -39,7 +39,7 @@ function plotRace(div, race) {
 
   var arc = d3.svg.arc()
       .innerRadius(innerRadius)
-      .outerRadius(outerRadius)
+      .outerRadius(outerRadius);
 
   var pie = d3.layout.pie();
 
@@ -59,7 +59,7 @@ function plotRace(div, race) {
       .style("fill", function(d, i) {
         //console.log(color.domain[i], color(i));
         return color(i);
-      })
+      });
 
   d3.timer(function(elapsed) {
     var t = ease(1 - Math.abs((elapsed % duration) / duration - 0.5) * 2);

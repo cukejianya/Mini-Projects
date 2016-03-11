@@ -10,7 +10,7 @@ function plotGenderAge(div, genderAge) {
         return keys.map( function(d, i) {
           //console.log(genderAge[idx][d])
           return { x: i, y: Math.max(0, parseInt(genderAge[idx][d])) };
-        });;
+        });
       })),
       yGroupMax = d3.max(layers, function(layer) { return d3.max(layer, function(d) { return d.y; }); }),
       yStackMax = d3.max(layers, function(layer) { return d3.max(layer, function(d) { return d.y0 + d.y; }); });
@@ -20,32 +20,32 @@ function plotGenderAge(div, genderAge) {
   var color = d3.scale.category20();
 
   var mainSelection = div.select("table").selectAll("tr")
-      .data(["", "Male", "Female"])
+      .data(["", "Male", "Female"]);
   var tr = mainSelection.enter().append("tr");
   var selection = tr.selectAll("td")
       .data(function(d, i) {
         keys.unshift(d);
-        if (!i) { return keys }
+        if (!i) { return keys; }
 
         var numbers =  keys.map(function(age, j) {
-          if (!j) { return age};
+          if (!j) { return age; }
           return genderAge[i-1][age];
-        })
+        });
       });
   selection.enter().append("td")
       .text(function(d, i) {
-        return d
-      })
+        return d;
+      });
 
-  div.node().type = "stack"
-  console.log(div, div.node().type)
+  div.node().type = "stack";
+  console.log(div, div.node().type);
   var margin = {top: 40, right: 40, bottom: 70, left: 10},
       width = 200 - margin.left - margin.right,
       height = (200) - margin.top - margin.bottom;
 
   var x = d3.scale.ordinal()
       .domain(keys)
-      .rangeRoundBands([0, width], .08);
+      .rangeRoundBands([0, width], 0.08);
 
   var y = d3.scale.linear()
       .domain([0, yStackMax])
@@ -142,14 +142,14 @@ function plotGenderAge(div, genderAge) {
   div.on("click", change.bind(div.node(),
     transitionStacked.bind(null, y, yStackMax, x, rect, keys),
     transitionGrouped.bind(null, y, yGroupMax, x, rect, height, keys)
-  ))
+  ));
   // Inspired by Lee Byron's test data generator.
   function bumpLayer(n, o) {
 
     function bump(a) {
-      var x = 1 / (.1 + Math.random()),
-          y = 2 * Math.random() - .5,
-          z = 10 / (.1 + Math.random());
+      var x = 1 / (0.1 + Math.random()),
+          y = 2 * Math.random() - 0.5,
+          z = 10 / (0.1 + Math.random());
       for (var i = 0; i < n; i++) {
         var w = (i / n - y) * z;
         a[i] += x * Math.exp(-w * w);
