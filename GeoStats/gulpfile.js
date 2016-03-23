@@ -5,6 +5,7 @@ var bufferV = require('vinyl-buffer');
 var uglify = require('gulp-uglify');
 var sourcemaps = require('gulp-sourcemaps');
 var gutil = require('gulp-util');
+var babel = require('gulp-babel');
 
 
 gulp.task('default', function () {
@@ -18,7 +19,7 @@ gulp.task('default', function () {
     .pipe(source('./index.js'))
     .pipe(bufferV())
     .pipe(sourcemaps.init({loadMaps: true}))
-        // Add transformation tasks to the pipeline here.
+        // Add transformation tasks to the pipeline here
         .pipe(uglify())
         .on('error', gutil.log)
     .pipe(sourcemaps.write('./'))

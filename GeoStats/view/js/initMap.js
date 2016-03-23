@@ -32,7 +32,6 @@ function initMap() {
   var options = {
     componentRestrictions: {country: 'us'}
   };
-
   autocomplete = new google.maps.places.Autocomplete(input, options);
   var infowindow = new google.maps.InfoWindow({
         maxWidth: 700

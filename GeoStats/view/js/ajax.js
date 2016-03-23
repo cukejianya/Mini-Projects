@@ -11,7 +11,7 @@ function serRequest(geolocate) {
         deferred.resolve(data);
       },
       error: function(jqXHR, textstatus, errorThrown) {
-          alert('text status ' + textstatus + ', err ' + errorThrown);
+          console.log('text status ' + textstatus + ', err ' + errorThrown);
       }
   });
 

@@ -16,6 +16,11 @@
   "bugs": {
     "url": "https://github.com/cukejianya/Mini-Projects/issues"
   },
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
+  },
   "homepage": "https://github.com/cukejianya/Mini-Projects#readme",
   "dependencies": {
     "body-parser": "~1.13.2",
@@ -28,8 +33,10 @@
     "serve-favicon": "~2.3.0"
   },
   "devDependencies": {
+    "babel-core": "^6.7.2",
     "browserify": "^13.0.0",
     "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-uglify": "^1.5.2",
     "gulp-util": "^3.0.7",

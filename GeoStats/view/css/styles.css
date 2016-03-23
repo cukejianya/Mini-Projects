@@ -68,3 +68,31 @@ body{
     float: left;
     clear: both;
 }
+
+table{
+  border-top:1px solid #e5eff8;
+  border-bottom:1px solid #e5eff8;
+}
+
+tr:nth-child(odd) {
+   background-color: #e5eff8;
+}
+
+.genderAge tr:nth-child(1) {
+  font-weight:bold;
+}
+
+td {
+  text-align:center;
+  padding:.3em 1em;
+  border-left:1px solid #e5eff8;
+  border-right:1px solid #e5eff8;
+}
+
+td:nth-child(1) {
+  font-weight:bold;
+}
+
+td:nth-child(1) {
+  font-weight:bold;
+}

@@ -3,6 +3,7 @@ function plotGenderAge(div, genderAge) {
   keys.shift();
   console.log(keys);
   console.log("Age", genderAge[0][keys[3]]);
+  console.log(genderAge);
   var n = 2, // number of layers
       m = 9, // number of samples per layer
       stack = d3.layout.stack(),
@@ -17,23 +18,25 @@ function plotGenderAge(div, genderAge) {
 
   var container = div.node().parentElement;
 
-  var color = d3.scale.category20();
+  var color = d3.scale.linear()
+      .domain([0, n - 1])
+      .range(["#aad", "#556"]);
 
   var mainSelection = div.select("table").selectAll("tr")
-      .data(["", "Male", "Female"]);
+      .data(keys);
+
   var tr = mainSelection.enter().append("tr");
+
   var selection = tr.selectAll("td")
       .data(function(d, i) {
-        keys.unshift(d);
-        if (!i) { return keys; }
-
-        var numbers =  keys.map(function(age, j) {
-          if (!j) { return age; }
-          return genderAge[i-1][age];
-        });
+        if (!i) {
+          return ["Ages", "Males", "Females"];
+        }
+        return [d, genderAge[0][d], genderAge[1][d]];
       });
   selection.enter().append("td")
       .text(function(d, i) {
+        console.log(d);
         return d;
       });
 
