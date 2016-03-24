@@ -1,0 +1,36 @@
+doctype html(lang='en')
+head
+    meta(charset='utf-8')
+    |
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    |     
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    // The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags
+    title GeoStats
+    // Bootstrap
+    link(rel='stylesheet', href='main.css')
+    |
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css')
+    // <link href="css/bootstrap.min.css" rel="stylesheet">
+  |
+  body
+    .row
+      .col-lg-6
+        .input-group
+          input#searchTextField.form-control(type='text', placeholder='Search for...')
+          |
+          span.input-group-btn
+            button.btn.btn-default(type='button') Go!
+    |
+    #map
+    |
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js')
+    |
+    script(src='bower_components/socket.io-client/socket.io.js')
+    |
+    script(type='text/javascript', src='index.js')
+    |
+    script(async='', defer='', type='text/javascript', src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ_-kmPXekKQwImQJQB7IzbFi2jfhaJVo&callback=initMap&libraries=geometry,places')
+    |
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
+    // <script src="js/bootstrap.min.js"></script>

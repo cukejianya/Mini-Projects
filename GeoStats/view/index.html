@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>GeoStats</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-custom navbar-fixed-top">
+          <form class="navbar-form" onSubmit="return false;">
+            <div class="form-group" style="display:inline;">
+              <div class="input-group">
+                <input id="searchTextField" type="text" class="form-control" placeholder="What are you searching for?">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span> </span>
+              </div>
+            </div>
+          </form>
+    </div>
+
+    <div id="map-canvas"></div>
+    <div class="container-fluid" id="main">
+        <div class="col-xs-12"><!--map-canvas will be postioned here--></div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="js/vendor/d3.min.js" charset="utf-8"></script>
+    <script src="js/index.js"></script>
+    <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ_-kmPXekKQwImQJQB7IzbFi2jfhaJVo&libraries=geometry,places"></script>
+    <script src="js/vendor/bootstrap.min.js"></script>
+  </body>
+</html>
