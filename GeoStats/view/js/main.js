@@ -42,11 +42,14 @@ function removePlot() {
 }
 
 $(document).ready(function()  {
-  initMap()
-  .then(request)
+  initMap(promiseChain);
+});
+
+function promiseChain(data) {
+  request(data)
   .then(function(data) {
     console.log(data);
     bindedCreatePlot = createPlot.bind(null, data);
     createPlot(data);
   });
-});
+}

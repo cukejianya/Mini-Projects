@@ -1,4 +1,3 @@
-var D = require('d.js');
 var map;
 
 function offsetMap(latlng,offsetx,offsety) {
@@ -21,8 +20,7 @@ function offsetMap(latlng,offsetx,offsety) {
   map.setCenter(newCenter);
 }
 
-function initMap() {
-  var deferred = D();
+function initMap(serRequest) {
   map = new google.maps.Map(document.getElementById('map-canvas'), {
     center: {lat: 41.850033, lng: -87.6500523},
     zoom: 4
@@ -40,31 +38,31 @@ function initMap() {
     map: map
   });
 
-  marker.addListener('click', function() {
+  marker.addListener('click', function(serRequest) {
     infowindow.open(map, marker);
   });
 
-  autocomplete.addListener('place_changed', function() {
+  autocomplete.addListener('place_changed', function () {
     infowindow.close();
+
     var place = autocomplete.getPlace();
     if (!place.geometry) {
       return;
     }
+    console.log("place:",place);
     console.log(place.address_components);
 
     var geolocate = {
       lat: place.geometry.location.lat(),
       lng: place.geometry.location.lng(),
       type: place.address_components[0].types[0],
-      place: place.address_components[0].long_name
     };
     console.log(geolocate.type, "Place Geometry",place.geometry.location);
-    deferred.resolve(geolocate);
 
     if (place.geometry.viewport) {
       map.fitBounds(place.geometry.viewport);
     } else {
-      offsetMap(place.geometry.location,0,700);
+      offsetMap(place.geometry.location,0,-700);
       map.setZoom(17);
     }
 
@@ -76,20 +74,20 @@ function initMap() {
     marker.setVisible(true);
     infowindow.setContent(
       '<div><strong>' + place.name + '</strong><br>' +
-      'Place ID: ' + place.place_id + '<br>' +
       place.formatted_address +
       '<br><br><strong>Race</strong><br>' +
       "<div class='race' style='height:350; width:900 ; display: inline-block;'><table class='left'></table></div>" +
       '<br><br><strong>Gender and Age</strong><br>' +
-      "<br><div class='genderAge' style='height:350; display: inline-block;'><table class='left'></table></div>" +
+      "<div class='genderAge' style='height:350; display: inline-block;'><table class='left'></table></div>" +
       "</div>");
 
     infowindow.open(map, marker);
+    serRequest(geolocate);
   });
 
   console.log(infowindow);
 
-  return deferred.promise;
+
 }
 
 module.exports = initMap;
