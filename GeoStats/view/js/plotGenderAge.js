@@ -3,7 +3,7 @@ function plotGenderAge(div, genderAge) {
   keys.shift();
   console.log(keys);
   console.log("Age", genderAge[0][keys[3]]);
-  console.log(genderAge);
+  console.log("MaleTotal", genderAge[0].total, genderAge[0]["total"]);
   var n = 2, // number of layers
       m = 9, // number of samples per layer
       stack = d3.layout.stack(),
@@ -22,17 +22,42 @@ function plotGenderAge(div, genderAge) {
       .domain([0, n - 1])
       .range(["#aad", "#556"]);
 
+  //Organizing the data for table.
+  var tableCategories = keys.slice();
+  tableCategories.unshift("header");
+  tableCategories.push("Total");
+
   var mainSelection = div.select("table").selectAll("tr")
-      .data(keys);
+      .data(tableCategories);
 
   var tr = mainSelection.enter().append("tr");
 
   var selection = tr.selectAll("td")
       .data(function(d, i) {
         if (!i) {
-          return ["Ages", "Males", "Females"];
+
+          return [
+            "Ages",
+            "Males",
+            "Females",
+            "Total",
+          ];
+        } else if (d === "Total") {
+
+          return [
+            d,
+            genderAge[0].total,
+            genderAge[1].total,
+            genderAge[0].total + genderAge[1].total,
+          ];
         }
-        return [d, genderAge[0][d], genderAge[1][d]];
+
+        return [
+          d,
+          genderAge[0][d],
+          genderAge[1][d],
+          genderAge[0][d]+genderAge[1][d],
+        ];
       });
   selection.enter().append("td")
       .text(function(d, i) {

@@ -4,6 +4,7 @@ var bodyparser = require('body-parser');
 var path = require('path');
 var request = require('./server/request.js');
 
+var port = process.env.PORT || process.env.app_port || 8080;
 app.use(express.static(path.join(__dirname, 'view')));
 app.use(bodyparser.urlencoded({extended: false}));
 app.use(bodyparser.json());
@@ -20,6 +21,6 @@ app.post('/coords/', function(req, res) {
   });
 });
 
-app.listen(3000, function(){
-  console.log('listening on *:3000');
+app.listen(port, function(){
+  console.log('listening on *:', port);
 });
