@@ -9,7 +9,9 @@ var col = [];
 var arrayInput;
 
 function getInput() {
+
   arrayInput = document.getElementsByTagName('input');
+  console.log(arrayInput);
   //Just was too lazy
   var numberArray = [];
   for (var j = 0; j < 9; j++) {
