@@ -1,59 +1,13 @@
 var submit = document.getElementById('submit');
 
 var sudokuGrid = [];
-var emptyCellsGrid = [];
+var potentialCells = [];
+var row = [[],[],[],[],[],[],[],[],[]];
+var col = [[],[],[],[],[],[],[],[],[]];
 //Initialize various groups
-var group = [];
-var row = [];
-var col = [];
+var group = [[],[],[],[],[],[],[],[],[]];
 var arrayInput;
 
-function getInput() {
-
-  arrayInput = document.getElementsByTagName('input');
-  console.log(arrayInput);
-  //Just was too lazy
-  var numberArray = [];
-  for (var j = 0; j < 9; j++) {
-    numberArray[j] = j+1;
-  }
-
-  for (var i = 0; i < arrayInput.length; i++) {
-    var cell = arrayInput[i];
-    var coord = cell.name.split(',').map( function(a){return parseInt(a);} );
-
-    var cellInfoMap = {
-      'val': parseInt(cell.value),
-      'coord': coord,
-      'group': groupPlacemant(coord),
-    };
-    if (!cell.value) {
-      cellInfoMap['possibles'] = numberArray.slice(0);
-      emptyCellsGrid.push(i);
-    }
-    sudokuGrid[i] = cellInfoMap;
-
-    //--Put in rightful place--
-    var groupNumber = cellInfoMap.group;
-    var rowNumber = cellInfoMap['coord'][0];
-    var colNumber = cellInfoMap['coord'][1];
-    var valIdx = cellInfoMap.val;
-    //If group-row-col idx does not exist, then init
-    if (!group[groupNumber])
-      group[groupNumber] = Array(9);
-    if (!row[rowNumber])
-      row[rowNumber] = Array(9);
-    if (!col[colNumber])
-      col[colNumber] = Array(9);
-    //Check to see if value actually exist, than assign true to val-idx in groups-rows-cols
-    if (!!valIdx) {
-      group[groupNumber][valIdx-1] = true;
-      row[rowNumber][valIdx-1] = true;
-      col[colNumber][valIdx-1] = true;
-    }
-  }
-  solve(emptyCellsGrid);
-}
 
 function groupPlacemant(array) {
   var row = array[0];
@@ -66,14 +20,63 @@ function groupPlacemant(array) {
   return groupNumber;
 }
 
-function solve(array) {
-  m = 0;
-  while ( emptyCellsGrid.length > 0 || m < 10 ) {
-    for (var i = 0; i < array.length; i++) {
-      var idx = array[i];
-      var possibles = sudokuGrid[idx].possibles;
-      var coord = sudokuGrid[idx].coord;
-      var groupNum = sudokuGrid[idx].group;
+
+function getInput() {
+
+  arrayInput = document.getElementsByTagName('input');
+  console.log(arrayInput);
+  //Just was too lazy
+
+
+  var numberArray = [];
+  for (var j = 0; j < 9; j++) {
+    numberArray[j] = j+1;
+  }
+
+
+  arrayInput.forEach( (cell, idx) => {
+    var coord = cell.name.split(',').map( (a) => parseInt(a) );
+
+    if (!cell.value) {
+      var cellInfoMap = {
+        'val': parseInt(cell.value),
+        'row': coord[0],
+        'col': coord[1],
+        'group': groupPlacemant(coord),
+      };
+      potentialCells.push(cellInfoMap);
+
+    } else {
+      row[coord[0]].push(cell.value);
+      cell[coord[1]].push(cell.value);
+      group[groupPlacemant(coord)].push(cell.value);
+    }
+
+  });
+
+  solve(emptyCellsGrid);
+}
+
+
+function solve(potentialCells) {
+  for (var i = 0; i < potentialCells.length; i++) {
+    cellObj = potentialCells[i];
+    var cellRow = cellObj.row;
+    var cellCol = cellObj.col;
+    var cellGroup = cellObj.group;
+
+    for (var k = 1; k <= 9; k++) {
+      var rowBool = (-1 !== row[cellRow].indexOf(k));
+      var colBool = (-1 !== col[cellCol].indexOf(k));
+      var groupBool = (-1 !== group[cellGroup].indexOf(k));
+
+      if (rowBool && colBool && groupBool) {
+        
+      }
+    }
+
+  }
+
     //   console.log(
     //     '\nRound: '+m+
     //     '\n i: '+i+
@@ -82,27 +85,7 @@ function solve(array) {
     //     '\n possibles: '+possibles+
     //     '\n groupNum: '+groupNum
     //   );
-      for (var j = 0; j < possibles.length; j++ ) {
-        var possible = possibles[j];
-        if (group[groupNum][possible-1] || row[coord[0]][possible-1] || col[coord[1]][possible-1]) {
-          //Always wanted to do the ++/-- afterwards effect
 
-          console.log('\nPossible Removed: ',possibles.splice(j--, 1));
-          console.log(possibles);
-          if (possibles.length === 1) {
-            sudokuGrid[idx].value = possibles[0];
-            group[groupNum][possibles[0]-1] = true;
-            row[coord[0]][possibles[0]-1] = true;
-            col[coord[1]][possibles[0]-1] = true;
-            array.splice(i--,1);
-            arrayInput[idx].value = possibles[0];
-          }
-        }
-        sudokuGrid[idx].possibles = possibles;
-      }
-    }
-    m++;
-  }
 }
 
 submit.addEventListener('click', getInput);
