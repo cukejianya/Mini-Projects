@@ -1,12 +1,12 @@
 var submit = document.getElementById('submit');
 
-var sudokuGrid = [];
-var potentialCells = [];
-var row = [[],[],[],[],[],[],[],[],[]];
-var col = [[],[],[],[],[],[],[],[],[]];
+var sudokuGrid;
+var potentialCells;
+var row;
+var col;
 //Initialize various groups
-var group = [[],[],[],[],[],[],[],[],[]];
-var banned = [];
+var group;
+var banned;
 var arrayInput;
 
 
@@ -18,14 +18,24 @@ function groupPlacemant(array) {
 
   var groupNumber = col*3+row;
 
-  return groupNumber;
+  return groupNumber - 1;
+}
+
+function init() {
+  sudokuGrid = [];
+  potentialCells = [];
+  row = [[],[],[],[],[],[],[],[],[]];
+  col = [[],[],[],[],[],[],[],[],[]];
+  //Initialize various groups
+  group = [[],[],[],[],[],[],[],[],[]];
+  banned = [];
 }
 
 
 function getInput() {
-
-  arrayInput = document.getElementsByTagName('input');
-  console.log(arrayInput);
+  init();
+  arrayInput = [].slice.call(document.getElementsByTagName('input'));
+  console.log('row',row,'col',col);
   //Just was too lazy
 
 
@@ -33,14 +43,15 @@ function getInput() {
   for (var j = 0; j < 9; j++) {
     numberArray[j] = j+1;
   }
-
+  console.log(arrayInput);
 
   arrayInput.forEach( (cell, idx) => {
     var coord = cell.name.split(',').map( (a) => parseInt(a) );
-
-    if (!cell.value) {
+    var value = parseInt(cell.value);
+    console.log(value);
+    if (!value) {
       var cellInfoMap = {
-        'val': parseInt(cell.value),
+        'val': value,
         'row': coord[0],
         'col': coord[1],
         'group': groupPlacemant(coord),
@@ -48,15 +59,26 @@ function getInput() {
 
       potentialCells.push(cellInfoMap);
     } else {
-      row[coord[0]].push(cell.value);
-      cell[coord[1]].push(cell.value);
-      group[groupPlacemant(coord)].push(cell.value);
+      console.log("row",coord[0],"col",coord[1]);
+      row[coord[0]].push(parseInt(cell.value));
+      col[coord[1]].push(parseInt(cell.value));
+      group[groupPlacemant(coord)].push(parseInt(cell.value));
     }
 
   });
 
   solve(potentialCells);
-  
+
+  arrayInput.forEach( (cell, idx) => {
+    var coord = cell.name.split(',').map( (a) => parseInt(a) );
+    var value = parseInt(cell.value);
+
+    if (!value) {
+      var pCell = potentialCells.shift();
+      cell.value = value;
+    }
+  });
+
 }
 
 
@@ -87,6 +109,9 @@ function solve(arr) {
     if (rowBool && colBool && groupBool && bannedBool) continue;
 
     i -= 2;
+    row.pop();
+    col.pop();
+    group.pop();
   }
 
     //   console.log(
