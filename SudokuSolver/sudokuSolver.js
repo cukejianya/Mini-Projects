@@ -65,7 +65,7 @@ function getInput() {
 
   });
 
-  solve(potentialCells);
+  solve(potentialCells, 0);
 
   arrayInput.forEach( (cell, idx) => {
     var coord = cell.name.split(',').map( (a) => parseInt(a) );
@@ -79,61 +79,36 @@ function getInput() {
 
 }
 
+function solve(arr, idx) {
+  var cellObj = arr[idx];
+  var cellRow = cellObj.row;
+  var cellCol = cellObj.col;
+  var cellGroup = cellObj.group;
+  var rowBool, colBool, groupBool;
 
-function solve(arr) {
-  for (var i = 0; i < arr.length; i++) {
+  for (var k = 1; k <= 9; k++) {
+    rowBool = (-1 === row[cellRow].indexOf(k));
+    colBool = (-1 === col[cellCol].indexOf(k));
+    groupBool = (-1 === group[cellGroup].indexOf(k));
 
-    if (rowBool && colBool && groupBool && bannedBool) continue;
+    if (rowBool && colBool && groupBool) {
+      cellObj.val = k;
+      row[cellRow].push(k);
+      col[cellCol].push(k);
+      group[cellGroup].push(k);
 
-    var prevCellObj = arr[i - 1];
-    row[prevCellObj.row].pop();
-    col[prevCellObj.col].pop();
-    group[prevCellObj.group].pop();
-    i -= 2;
-
-  }
-
-  function findCell(idx) {
-    var cellObj = arr[idx];
-    var cellRow = cellObj.row;
-    var cellCol = cellObj.col;
-    var cellGroup = cellObj.group;
-    var rowBool, colBool, groupBool;
-
-    for (var k = 1; k <= 9; k++) {
-      rowBool = (-1 === row[cellRow].indexOf(k));
-      colBool = (-1 === col[cellCol].indexOf(k));
-      groupBool = (-1 === group[cellGroup].indexOf(k));
-
-      if (rowBool && colBool && groupBool) {
-        cellObj.val = k;
-        row[cellRow].push(k);
-        col[cellCol].push(k);
-        group[cellGroup].push(k);
-
-        if (findCell(idx+1)) {
-          return true;
-        }
-
-        row[cellRow].pop();
-        col[cellCol].pop();
-        group[cellGroup].pop();
+      if (solve(arr, idx+1)) {
+        return true;
       }
 
+      row[cellRow].pop();
+      col[cellCol].pop();
+      group[cellGroup].pop();
     }
 
-    return false;
   }
 
-    //   console.log(
-    //     '\nRound: '+m+
-    //     '\n i: '+i+
-    //     '\n idx: '+idx+
-    //     '\n coord: '+coord+
-    //     '\n possibles: '+possibles+
-    //     '\n groupNum: '+groupNum
-    //   );
-
+  return false;
 }
 
 //debug
@@ -145,7 +120,7 @@ function printGrid(arr) {
       for (var i = 0; i < arr.length; i++) {
         cell = arr[i];
         if (cell.row === r && cell.col === c) {
-          grid += cell.value
+          grid += cell.value;
         } else {
 
         }
