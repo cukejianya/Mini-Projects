@@ -33,7 +33,7 @@ function init() {
 function getInput() {
   init();
   arrayInput = [].slice.call(document.getElementsByTagName('input'));
-  console.log('row',row,'col',col);
+  //console.log('row',row,'col',col);
   //Just was too lazy
 
 
@@ -41,12 +41,12 @@ function getInput() {
   for (var j = 0; j < 9; j++) {
     numberArray[j] = j+1;
   }
-  console.log(arrayInput);
+  //console.log(arrayInput);
 
   arrayInput.forEach( (cell, idx) => {
     var coord = cell.name.split(',').map( (a) => parseInt(a) );
     var value = parseInt(cell.value);
-    console.log(value);
+    //console.log(value);
     if (!value) {
       var cellInfoMap = {
         'val': value,
@@ -65,21 +65,23 @@ function getInput() {
 
   });
 
+  //console.log("Length:", potentialCells.length);
   solve(potentialCells, 0);
 
   arrayInput.forEach( (cell, idx) => {
-    var coord = cell.name.split(',').map( (a) => parseInt(a) );
     var value = parseInt(cell.value);
 
     if (!value) {
       var pCell = potentialCells.shift();
-      cell.value = value;
+      cell.value = pCell.val;
     }
   });
 
 }
 
 function solve(arr, idx) {
+  //console.log("idx", idx);
+  if (idx === arr.length) return true;
   var cellObj = arr[idx];
   var cellRow = cellObj.row;
   var cellCol = cellObj.col;
@@ -98,6 +100,7 @@ function solve(arr, idx) {
       group[cellGroup].push(k);
 
       if (solve(arr, idx+1)) {
+
         return true;
       }
 
@@ -105,31 +108,12 @@ function solve(arr, idx) {
       col[cellCol].pop();
       group[cellGroup].pop();
     }
-
   }
 
   return false;
 }
 
 //debug
-function printGrid(arr) {
-  var grid = "";
-  var cell;
-  for (var r = 0; r < 9; r++) {
-    for (var c = 0; c < 9; c++) {
-      for (var i = 0; i < arr.length; i++) {
-        cell = arr[i];
-        if (cell.row === r && cell.col === c) {
-          grid += cell.value;
-        } else {
 
-        }
-      }
-      if (c+1 % 3 === 0) {
-        grid += "";
-      }
-    }
-  }
-}
 
 submit.addEventListener('click', getInput);
