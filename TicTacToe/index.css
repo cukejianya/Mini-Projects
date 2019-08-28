@@ -1,19 +1,25 @@
 .container {
   display: grid;
-  width: 300px;
-  height: 300px;
   grid-template-columns: 100px 100px 100px;
   grid-template-rows: 100px 100px 100px;
   grid-gap: 15px 15px;
   grid-template-areas:
     "topleft topcenter topright"
     "midleft midcenter midright"
-    "bottomleft bottomcenter bottomright"
+    "bottomleft bottomcenter bottomright";
+  padding: 30px;
 }
 
-div {
+.cell {
+  border-radius: 15%;
   border: 4px solid black;
-  display: inline;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cell:hover {
+  background-color: #dde0e3
 }
 
 @keyframes blink {
@@ -30,7 +36,34 @@ img {
   height: 70px;
 }
 
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .won {
   animation: blink 1s;
   animation-iteration-count: infinite;
+}
+
+.center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -150px;
+  margin-top: -150px;
+}
+
+.reset {
+  width: 100px;
+  height: 30px;
+  border: 1px solid black;
+  border-radius: 5px;
+  outline: none;
+}
+
+.reset:hover {
+  background-color: #dde0e3
 }

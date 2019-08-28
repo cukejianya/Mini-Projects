@@ -31,14 +31,11 @@ let game = {
 
   reset() {
     this.gameOverAudio.load();
-    document.querySelectorAll("div").forEach((div) => {
-      if (div.className === "container") {
-        return;
-      }
+    document.querySelectorAll(".cell").forEach((div) => {
       if (div.hasChildNodes()) {
         div.removeChild(div.firstChild);
       }
-      if (div.className === "won") {
+      if (div.classList.contains("won")) {
         div.classList.remove('won');
       }
       div.addEventListener("click", clickEvent);
@@ -62,10 +59,7 @@ let game = {
     console.log(str);
     let wonCells = player.getWinningCells();
     console.log(wonCells);
-    document.querySelectorAll('div').forEach((div) => {
-      if (div.className === "container") {
-        return;
-      }
+    document.querySelectorAll('.cell').forEach((div) => {
       if (wonCells.includes(div.id)) {
           div.classList.add('won');
       }
@@ -88,8 +82,8 @@ let game = {
         : this.playerO;
       yield;
     }
+    this.end(this.currentPlayer.didIWin() ? this.currentPlayer : null);
     this.currentPlayer = null;
-    this.end(null);
     return;
   }
 }
