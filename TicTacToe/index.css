@@ -4,6 +4,7 @@
   height: 300px;
   grid-template-columns: 100px 100px 100px;
   grid-template-rows: 100px 100px 100px;
+  grid-gap: 15px 15px;
   grid-template-areas:
     "topleft topcenter topright"
     "midleft midcenter midright"

@@ -14,6 +14,7 @@ let game = {
     console.log("Running");
     let resetButton = document.querySelector(".reset");
     this.scribleAudio = new Audio('scribleAudio.wav');
+    this.gameOverAudio = new Audio('gameOver.wav');
     this.playerX = Object.assign(Object.create(player), {
       image: "x.jpg",
       cellsSum: 0,
@@ -29,6 +30,7 @@ let game = {
   },
 
   reset() {
+    this.gameOverAudio.load();
     document.querySelectorAll("div").forEach((div) => {
       if (div.className === "container") {
         return;
@@ -48,6 +50,7 @@ let game = {
   },
   
   end(player) {
+    this.gameOverAudio.play();
     let str;
     if (!player) { 
       str = "It's a tie";
@@ -120,7 +123,6 @@ let player = {
     0b001010100,
   ],
   markCell(elm) {
-    console.log(elm.id);
     this.cellsSum += this.mapToBinary[game.getCellNumberById(elm.id)]; 
   },
   didIWin() {
