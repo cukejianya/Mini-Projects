@@ -2,13 +2,16 @@ let game = {
   setUp() {
     console.log("Running");
     let resetButton = document.querySelector(".reset");
+    this.scribleAudio = new Audio('scribleAudio.wav');;
     this.playerX = Object.assign(Object.create(player), {
-      image: "https://www.drodd.com/images15/letter-x14.jpg",
-      cellsSum: 0
+      image: "x.jpg",
+      cellsSum: 0,
+      pos: 1
     });
     this.playerO = Object.assign(Object.create(player), {
-      image: "https://www.drodd.com/images15/letter-o25.png",
-      cellsSum: 0
+      image: "o.png",
+      cellsSum: 0,
+      pos: 2
     });
     this.reset();
     resetButton.addEventListener("click", this.reset.bind(this));
@@ -29,22 +32,40 @@ let game = {
     this.turn = this.turnGenerator.call(this);
     this.turn.next();
   },
+  
+  end(num) {
+    let str;
+    if (num === 1) {
+      str = "Player X wins";
+    } else if (num === 2) {
+      str = "Player O wins";
+    } else if (num === 0) {
+      str = "It's a tie";
+    }
+    console.log(str);
+    document.querySelectorAll('div').forEach((div) => {
+      if (div.className === "container") {
+        return;
+      }
+      div.removeEventListener("click", clickEvent);
+    });
+  },
 
   * turnGenerator() {
     for (var i = 0; i < 9; i++) {
       if (this.currentPlayer && this.currentPlayer.didIWin()) {
+        console.log(this.currentPlayer.getWinningCells(), this.currentPlayer.pos);
+        this.end(this.currentPlayer.pos);
         this.currentPlayer = null;
-        this.reset();
         return;
       }
       this.currentPlayer = this.currentPlayer === this.playerO 
         ? this.playerX
         : this.playerO;
-      console.log(this.currentPlayer);
       yield;
     }
     this.currentPlayer = null;
-    this.reset();
+    this.end(0);
     return;
   }
 }
@@ -56,6 +77,7 @@ let clickEvent = (function (event) {
   this.currentPlayer.markCell(elm);
   imageElm.src = this.currentPlayer.image;
   elm.appendChild(imageElm);
+  this.scribleAudio.play();
   elm.removeEventListener("click", clickEvent);
   this.turn.next();
 }).bind(game);
@@ -66,7 +88,7 @@ let player = {
       0b1000, 0b10000, 0b100000, 
       0b1000000, 0b10000000, 0b100000000
   ],
-  winningBinary: [
+  winningBinaries: [
     0b111000000,
     0b000000111,
     0b000111000,
@@ -80,8 +102,16 @@ let player = {
     this.cellsSum += this.mapToBinary[parseInt(elm.className) - 1]; 
   },
   didIWin() {
-    return this.winningBinary.some((binary) => {
-      console.log(binary & this.cellsSum, binary);
+    return !!this.getWinningBinary().length;
+  },
+  getWinningCells() {
+    let wonBinary = this.getWinningBinary().pop();
+    return this.mapToBinary.filter(binary => {
+      return (binary & wonBinary) === binary;
+    }).map(num => Math.log2(num) + 1);
+  },
+  getWinningBinary() {
+    return this.winningBinaries.filter((binary) => {
       return (binary & this.cellsSum) === binary;
     });
   },
