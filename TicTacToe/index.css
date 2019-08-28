@@ -15,7 +15,21 @@ div {
   display: inline;
 }
 
+@keyframes blink {
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
 img {
   width: 70px;
   height: 70px;
+}
+
+.won {
+  animation: blink 1s;
+  animation-iteration-count: infinite;
 }

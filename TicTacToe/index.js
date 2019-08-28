@@ -1,8 +1,19 @@
 let game = {
+  mapNumToStr: [
+    "one", "two", "three",
+    "four", "five", "six",
+    "seven", "eight", "nine"
+  ],
+  getIdByCellNumber(num) {
+    return this.mapNumToStr[num];
+  },
+  getCellNumberById(str) {
+    return this.mapNumToStr.indexOf(str);
+  },
   setUp() {
     console.log("Running");
     let resetButton = document.querySelector(".reset");
-    this.scribleAudio = new Audio('scribleAudio.wav');;
+    this.scribleAudio = new Audio('scribleAudio.wav');
     this.playerX = Object.assign(Object.create(player), {
       image: "x.jpg",
       cellsSum: 0,
@@ -25,6 +36,9 @@ let game = {
       if (div.hasChildNodes()) {
         div.removeChild(div.firstChild);
       }
+      if (div.className === "won") {
+        div.classList.remove('won');
+      }
       div.addEventListener("click", clickEvent);
     });
     this.playerX.reset();
@@ -33,19 +47,24 @@ let game = {
     this.turn.next();
   },
   
-  end(num) {
+  end(player) {
     let str;
-    if (num === 1) {
-      str = "Player X wins";
-    } else if (num === 2) {
-      str = "Player O wins";
-    } else if (num === 0) {
+    if (!player) { 
       str = "It's a tie";
+    } else if (player.pos === 1) {
+      str = "Player X wins";
+    } else if (player.pos === 2) {
+      str = "Player O wins";
     }
     console.log(str);
+    let wonCells = player.getWinningCells();
+    console.log(wonCells);
     document.querySelectorAll('div').forEach((div) => {
       if (div.className === "container") {
         return;
+      }
+      if (wonCells.includes(div.id)) {
+          div.classList.add('won');
       }
       div.removeEventListener("click", clickEvent);
     });
@@ -54,10 +73,12 @@ let game = {
   * turnGenerator() {
     for (var i = 0; i < 9; i++) {
       if (this.currentPlayer && this.currentPlayer.didIWin()) {
-        console.log(this.currentPlayer.getWinningCells(), this.currentPlayer.pos);
-        this.end(this.currentPlayer.pos);
+        this.end(this.currentPlayer);
         this.currentPlayer = null;
         return;
+      }
+      if (this.currentPlayer) {
+        console.log(this.currentPlayer.cellsSum);
       }
       this.currentPlayer = this.currentPlayer === this.playerO 
         ? this.playerX
@@ -65,7 +86,7 @@ let game = {
       yield;
     }
     this.currentPlayer = null;
-    this.end(0);
+    this.end(null);
     return;
   }
 }
@@ -99,7 +120,8 @@ let player = {
     0b001010100,
   ],
   markCell(elm) {
-    this.cellsSum += this.mapToBinary[parseInt(elm.className) - 1]; 
+    console.log(elm.id);
+    this.cellsSum += this.mapToBinary[game.getCellNumberById(elm.id)]; 
   },
   didIWin() {
     return !!this.getWinningBinary().length;
@@ -108,7 +130,7 @@ let player = {
     let wonBinary = this.getWinningBinary().pop();
     return this.mapToBinary.filter(binary => {
       return (binary & wonBinary) === binary;
-    }).map(num => Math.log2(num) + 1);
+    }).map(num => game.getIdByCellNumber(Math.log2(num)));
   },
   getWinningBinary() {
     return this.winningBinaries.filter((binary) => {
