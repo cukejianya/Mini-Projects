@@ -16,7 +16,7 @@
   "author": "Chinedum Ukejianya",
   "license": "MIT",
   "dependencies": {
-    "jquery": "^2.2.1",
+    "jquery": "^3.5.0",
     "lodash": "^4.6.1",
     "moment": "^2.11.2",
     "react": "^0.14.7",
